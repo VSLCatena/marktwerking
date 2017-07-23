@@ -1,0 +1,18 @@
+body {
+    background-color: moccasin;
+}
+
+.prices {
+    background-image: url('../images/bg_rtl875.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 50vh;
+}
+
+.timer {
+    background-color: #1162e9;
+    padding: 2pt;
+    color: #FFF;
+    font-size: 20pt;
+    margin-top: 10pt;
+}
