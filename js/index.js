@@ -10,6 +10,7 @@ var statistics = new Statistics(document.getElementById('statistics'));
 
 function load(){
     $.getJSON('prices.php', function(data){
+        drawList(data);
         statistics.draw(data);
     });
 }
@@ -40,6 +41,17 @@ function tick(){
 
     // Update a second later
     setTimeout(tick, 1000);
+}
+
+function drawList(data){
+    var html = "";
+
+    data.forEach(function(item){
+       html += '<div class="col-xs-9">' + item.name + '</div>' +
+           '<div class="col-xs-3 text-right">' + item.prices[item.prices.length - 1].toFixed(2) +'</div>';
+    });
+
+    $("#price-list").html(html);
 }
 
 tick();

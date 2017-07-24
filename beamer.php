@@ -22,7 +22,17 @@ require_once('core.php');
                 </header>
                 <main class="row">
                     <div class="col-xs-12">
-                        <div class="prices"></div>
+                        <div class="prices-background">
+                            <div class="prices col-xs-5">
+                                <div class="row">
+                                    <div class="col-xs-12 text-underline">
+                                        <u>Prijzen</u>
+                                    </div>
+                                </div>
+                                <div class="row" id="price-list">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
                 <footer class="row">
