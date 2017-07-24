@@ -1,5 +1,9 @@
 body {
     background-color: moccasin;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .prices-background {
@@ -13,12 +17,38 @@ body {
 
 .prices {
     max-width: 50%;
-    background-color: RGBA(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     border: 1px solid black;
     margin-left: 50px;
     font-size: 20px;
     font-weight: 500;
     padding: 20px;
+    color: #000;
+    transition: 0.5s;
+    position: relative;
+}
+
+.loading .prices {
+    color: rgba(0, 0, 0, 0.1);
+}
+
+.prices-loader {
+    display: none;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.loading .prices-loader {
+    display: flex;
+}
+
+.prices-loader img {
+
 }
 
 .timer {
@@ -27,4 +57,54 @@ body {
     color: #FFF;
     font-size: 20pt;
     margin-top: 10pt;
+}
+
+.bn-overlay {
+    opacity: 1;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.8s ease-in-out;
+}
+
+.bn-overlay.animate {
+    transform: scale(5, 5);
+}
+
+.bn-overlay.bn-hidden {
+    opacity: 0;
+}
+
+.bn-text {
+    text-transform: uppercase;
+    color: #CCC;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 0.3vw 0 #000, 0.3vw 0.5vw 0.5vw #000;
+    transform: translate(75vw, -75vh) rotate(30deg) skew(30deg, 0deg);
+    transition: 1.0s ease-in-out;
+}
+
+.bn-text.animate {
+    transform: initial;
+}
+
+.bn-breaking {
+    width: 200vw;
+    background-color: rgba(255, 0, 0, 0.5);
+    font-size: 10vw;
+    line-height: 10vw;
+}
+
+.bn-news {
+    width: 200vw;
+    background-color: rgba(0, 0, 255, 0.5);
+    font-size: 18vw;
+    line-height: 18vw;
 }

@@ -24,6 +24,9 @@ require_once('core.php');
                     <div class="col-xs-12">
                         <div class="prices-background">
                             <div class="prices col-xs-5">
+                                <div class="prices-loader">
+                                    <img src="./images/loading.gif" />
+                                </div>
                                 <div class="row">
                                     <div class="col-xs-12 text-underline">
                                         <u>Prijzen</u>
@@ -41,6 +44,12 @@ require_once('core.php');
                     </div>
                 </footer>
             </div>
+        </div>
+    </div>
+    <div class="bn-overlay bn-hidden">
+        <div class="bn-text">
+            <div class="bn-breaking">Breaking</div>
+            <div class="bn-news">news</div>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
