@@ -1,4 +1,5 @@
 <?php
+require_once('../settings.php');
 
 ###############################################################
 # Page Password Protect 2.13
@@ -49,7 +50,7 @@ $LOGIN_INFORMATION = array(
 // Add login/password pairs below, like described above
 // NOTE: all rows except last must have comma "," at the end of line
 $LOGIN_INFORMATION = array(
-    'Wij kunnen bardraaien'
+    BAR_PASSWORD
 );
 
 // request login? true - show login and password boxes, false - password box only
