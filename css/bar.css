@@ -1,5 +1,5 @@
 .btn-sq {
-  width: 100px !important;
+  width: 100px;
   height: 100px !important;
   font-size: 10px;
 }
@@ -15,19 +15,25 @@
 	margin: 5px;
 }
 	
-.prod {
-	height:75% !important;
-}
-
-.prod_decr {
-	height:25% !important;
-}
-	
-
 .category{
 	margin:10px;
 }
+
+.checkout-item-el {
 	
-		
-			
-		
+	display:inline-block
+
+}
+	
+
+.checkout-total {
+	
+	padding: 10px;
+	height:50px;
+}
+
+.checkout-list {
+	
+	height:400px;
+	
+}
