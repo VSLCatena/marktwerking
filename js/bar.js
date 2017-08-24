@@ -25,6 +25,24 @@ angular.module('barApp', [])
             });
         };
 
+        $scope.subtractFromOrder = function(item){
+            marktwerking.order.forEach(function(el, index, object){
+                if(el.id === item.id) {
+                    if(--el.times <= 0){
+                        object.splice(index, 1);
+                    }
+                }
+            });
+        };
+
+        $scope.deleteFromOrder = function(item){
+            marktwerking.order.forEach(function(el, index, object){
+                if(el.id === item.id) {
+                    object.splice(index, 1);
+                }
+            });
+        };
+
         marktwerking.submitOrder = function() {
             // send current order to the server
         };

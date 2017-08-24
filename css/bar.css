@@ -6,8 +6,23 @@
 .btn-sq-prod {
   width: 150px !important;
   height: 150px !important;
+    font-size: 12px;
+    background-size: cover;
+    background-position: center center;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    position: relative;
+
 }
 
+.btn-sq-prod-price {
+    position:absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+
+}
 
 .category{
 	margin-top: 10px;
@@ -20,11 +35,24 @@
 
 }
 
+.checkout-item {
+
+    font-size:14px;
+    font-family: "Comic Sans MS";
+
+}
 
 .checkout-list {
 	
 	height:400px;
-	
+
+}
+
+.checkout-header{
+    font-size:32px;
+    font-family: "Bauhaus 93";
+
+
 }
 
 .checkout-total {
@@ -32,18 +60,28 @@
     border-top: 1px solid black;
 }
 
+.checkout-item-mod {
+    width: 40%;
+    margin: 2%;
+}
+
+
+.checkout-order-pay{
+    padding:20px;
+    margin-top:25px;
+
+}
+
 .modal-backdrop.in {
     opacity: 0.8;
 }
 
 /* box-shadow
-    font-size: 12px;
-    background: linear-gradient( rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7) ), URL("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Mallard2.jpg/1200px-Mallard2.jpg");
-    background-size: cover;
-    background-position: center center;
-    color: #000;
-    font-size: 18px;
-    font-weight: bold;
+
 }
 
  */
+.row {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
