@@ -89,4 +89,13 @@ angular.module('barApp', [])
             return total;
         };
 
+        $scope.settingsItemRemove = function(index) {
+            $scope.bar.items.splice(index, 1);
+        };
+
+        $scope.settingsItemAdd = function() {
+            $scope.bar.items.push({ url: ''});
+        };
+
     });
+

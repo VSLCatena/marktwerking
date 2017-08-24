@@ -14,8 +14,7 @@
 			<div class="row">
 				<div class="col-md-1 view">
 					<div class="btn-group-vertical">
-						<button class="btn btn-primary btn-sq" type="button">view_01</button>
-						<button class="btn btn-primary btn-sq" type="button">view_02</button>
+                        <a class="btn btn-primary btn-sq" href="../beamer.php"  type="button">Beamer</a>
 						<button class="btn btn-primary btn-sq" data-target="#financial" data-toggle="modal" type="button">Financial</button>
 						<button class="btn btn-primary btn-sq" data-target="#settings" data-toggle="modal" type="button">Settings</button>
 					</div>
@@ -88,27 +87,83 @@
 				</div>
 			</div>
 		</div><!-- Modal-->
-		<div class="modal fade" id="settings" role="dialog">
+		<div class="modal fade " id="settings" role="dialog">
 			<div class="modal-dialog modal-lg">
 				<!-- Modal content-->
 				<div class="modal-content">
 					<div class="modal-header">
 						<button class="close" data-dismiss="modal" type="button">&times;</button>
 						<h4 class="modal-title">
-							Settings
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#general">General</a></li>
+                                <li><a data-toggle="tab" href="#rounds">Rounds</a></li>
+                                <li><a data-toggle="tab" href="#drinks">Drinks</a></li>
+                            </ul>
 						</h4>
 					</div>
 					<div class="modal-body">
 						<p>
-							Length of rounds, amount of rounds, pricing, etc
+
+
+                            <div class="tab-content">
+                                <div id="general" class="tab-pane fade in active">
+                        <p>
+
+                        <div class="radio">
+                            <label><input type="radio" name="settings-type-bar">Normale Bar</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" name="settings-type-bar">Marktwerking</label>
+                        </div>
+                        <button class="btn btn-info">Submit</button>
+                        </p>
+                    </div>
+                    <div id="drinks" class="tab-pane fade " ng-controller="barController as bar">
+                        <p>
+                        <div class="input-append" ng-repeat="items in bar.items">
+                            <input type="text" ng-model="items.name">
+                            <input type="text" class="settings-item-price" ng-model="items.price">
+                            <input type="text" class="settings-item-price" ng-model="items.price_min">
+                            <input type="text" ng-model="items.category">
+                            <label><input type="checkbox" value="">Activeren?</label>
+                            <button class="btn">Plaatje Upload</button>
+                            <a href='../images/drinks/{{items.name}}.png' />Foto</a>
+                            <button class="btn" ng-click="settingsItemRemove($index)">X</button>
+                        </div>
+                        <button class="btn btn-small" ng-click="settingsItemAdd()">Add</button>
+                        <button class="btn btn-info">Submit</button>
+
+
+
+                        </p>
+                    </div>
+                    <div id="rounds" class="tab-pane fade">
+                        <p>
+
+                        <form>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i>Tijd ronde (min):</span>
+                                <input id="time-round" type="text" class="form-control" name="time-round" placeholder="Ronde duur" ng-model="settings.time.round">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i>Tijd totaal (uur):</span>
+                                <input id="time-total" type="text" class="form-control" name="time-total" placeholder="Totale duur" ng-model="settings.time.total">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i>Aantal ronden:</span>
+                                <input id="round-total" type="text" class="form-control" name="round-total" placeholder="Totale duur" value="{{settings.time.total*60/settings.time.round}}" disabled>
+                            </div>
+                            <br>
+                            <input type="submit" class="btn btn-info" value="Aanpassen">
+                        </form>
+
+                        </p>
+                    </div>
+                </div>
+
+
 							
-							<?php
-								print '<pre>';
-								print_r($result); 
-								print '</pre>';
-							?>
-							
-						</p>
+
 					</div>
 					<div class="modal-footer">
 						<button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
