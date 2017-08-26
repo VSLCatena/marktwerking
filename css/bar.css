@@ -1,37 +1,11 @@
-.btn-sq {
-  width: 100px;
-  height: 100px !important;
-}
-
-.btn-sq-prod {
-  width: 150px !important;
-  height: 150px !important;
-    font-size: 12px;
-    background-size: cover;
-    background-position: center center;
-    color: #000;
-    font-size: 18px;
-    font-weight: bold;
-    position: relative;
-
-}
-
-.btn-sq-prod-price {
-    position:absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 12px;
-
-}
-
-.category{
-	margin-top: 10px;
-    margin-bottom: 10px;
+.row {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .checkout-item-el {
-	
-	display:inline-block
+
+    display:inline-block
 
 }
 
@@ -43,16 +17,18 @@
 }
 
 .checkout-list {
-	
-	height:400px;
+
+    height:400px;
 
 }
 
 .checkout-header{
     font-size:32px;
     font-family: "Bauhaus 93";
+}
 
-
+.checkout-content {
+    min-height: 250px;
 }
 
 .checkout-total {
@@ -60,34 +36,75 @@
     border-top: 1px solid black;
 }
 
+.checkout-total-price{
+    font-size: 26px;
+    font-weight: bold;
+}
+
 .checkout-item-mod {
     width: 40%;
     margin: 2%;
 }
 
-
 .checkout-order-pay{
     padding:20px;
     margin-top:25px;
+}
 
+.orderlist{
+    box-shadow:1px 1px 1px 1px;
+    }
+
+
+.category{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+.btn-sq {
+  width: 100px;
+  height: 100px !important;
+}
+
+.btn-sq-prod {
+  width: 150px !important;
+  height: 150px !important;
+    background-size: cover;
+    background-position: center center;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    position: relative;
+}
+
+.btn-sq-prod-price {
+    position:absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
 }
 
 .modal-backdrop.in {
     opacity: 0.8;
 }
 
-/* box-shadow
 
-}
-
- */
-.row {
-    margin-top: 5px;
-    margin-bottom: 5px;
+.modal-xlg {
+    width:75%;
 }
 
 
-.settings-item-price{
+/*.settings-item-price{
     width:5%;
+}*/
 
+input[type=file] {
+    display: inline;
+}
+
+.settings-item-img{
+    height:35px;
+    width:35px;
+    border:1px solid rgba(8, 8, 8, 0.09);
 }
