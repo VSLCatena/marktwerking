@@ -1,12 +1,31 @@
 angular.module('barApp', [])
-    .controller('barController', function($scope, $http) {
+    .filter('matchCategory', function() {
+        return function(items, category) {
+            var filtered = [];
+            if(category === ''){
+                return items;
+            }
+
+            angular.forEach(items, function(item) {
+                if(item.categories !== null && item.categories.indexOf(parseInt(category)) !== -1){
+                    filtered.push(item);
+                }
+            });
+
+            return filtered;
+        };
+    })
+    .controller('barController', function($scope, $http, $interval) {
         var marktwerking = this;
         marktwerking.categories = [];
         marktwerking.items = [];
         marktwerking.order = [];
         marktwerking.settings = [];
+        marktwerking.interval;
 
         marktwerking.itemFilter = '';
+
+        $scope.update
 
         $scope.addToOrder = function(item) {
             var found = false;
@@ -48,37 +67,46 @@ angular.module('barApp', [])
             // send current order to the server
         };
 
-        marktwerking.update = function(){
+        marktwerking.setup = function(){
             $http({
                 method: 'GET',
                 url: '../sql.php'
             }).then(function successCallback(response) {
-                // Fill in the items
-                marktwerking.items = response.data.drinks_start;
-                marktwerking.items.push({id:$scope.bar.items.length.toString(), round_id:'0'});
-                for(var key in marktwerking.items){
-                    if (marktwerking.items[key].active==="1"){marktwerking.items[key].active=true;}
-                    else {marktwerking.items[key].active=false;}};
-
+                console.debug(response.data);
+                marktwerking.categories = response.data.categories;
+                marktwerking.items = response.data.drinks;
                 marktwerking.settings = response.data.settings;
-                console.debug(marktwerking);
-
-                // TODO fix this to a correct category system
-                for(var key in marktwerking.settings){
-                    var val = marktwerking.settings[key];
-                    if(key.startsWith('Cat_') && key !== 'Cat_amount' && val !== ""){
-                        marktwerking.categories.push(marktwerking.settings[key]);
-                    }
-                }
-
-
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });
         };
+        marktwerking.setup();
 
+
+        marktwerking.update = function() {
+            $http({
+                method: 'GET',
+                url: '../test.php'
+            }).then(function successCallback(response) {
+                console.debug(response.data);
+                // Loop over all items and associate each current price to the correct item
+                response.data.forEach(function(dataItem){
+                    marktwerking.items.forEach(function(item, index, object){
+                        if(dataItem.id === item.id){
+                            item.price = dataItem.prices[dataItem.prices.length-1];
+                        }
+                    });
+                });
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
+        };
         marktwerking.update();
+
+        // TODO make this sync up with the update timer
+        marktwerking.interval = $interval(marktwerking.update, 5000);
 
 
 

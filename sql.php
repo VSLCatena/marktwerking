@@ -1,32 +1,44 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set('display_errors',1);
 
-require('core.php');
+require_once('core.php');
+$data = array();
 
-$sql['select_settings_all'] = "SELECT * FROM settings";
-$sql['select_drinks_all'] = "SELECT * FROM drinks";
-$sql['select_orders_all'] = "SELECT * FROM orders";
+// Grab all categories
+$query = $pdo->query('SELECT * FROM categories');
+$data['categories'] = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$sql['select_settings_pass'] = "SELECT `setting`, `value` FROM `settings` WHERE setting = 'password' ";
+// fetch all drink data
+$query = $pdo->query("SELECT * FROM drinks");
+// Save it to a separate array to easily link categories to it
+$drinks = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$sql['select_drinks_start'] = "SELECT * FROM `drinks` WHERE `round_id` = '0' ";
+// fetch all the drink_categories
+$query = $pdo->query('SELECT * FROM drink_category');
+$drink_cat = array();
+foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+    $drink_cat[$row['drink_id']][] = intval($row['category_id']);
+}
+
+// Now link the categories to the drinks
+foreach($drinks as &$drink){
+    if(!array_key_exists($drink['id'],$drink_cat)){
+        $drink['categories'] = null;
+        continue;
+    }
+    $drink['categories'] = $drink_cat[$drink['id']];
+}
+$data['drinks'] = $drinks;
 
 
+// fetch all settings
+$query = $pdo->query("SELECT * FROM settings");
+$settings = array();
+foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+    $settings[$row['key']] = $row['value'];
+}
+$data['settings'] = $settings;
 
-// prepare sql and bind parameters
-$statement = $db->prepare($sql['select_drinks_start']);
-$statement->execute();
-$drinks_start = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-// prepare sql and bind settings parameters
-$statement = $db->prepare($sql['select_settings_all']);
-$statement->execute();
-$settings = $statement->fetchAll(PDO::FETCH_KEY_PAIR);;
-
-$data['settings']=$settings;
-$data['drinks_start']=$drinks_start;
 echo json_encode($data);

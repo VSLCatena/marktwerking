@@ -2,12 +2,14 @@
 require_once('core.php');
 
 class Product implements JsonSerializable {
+    private $id;
     private $name;
     private $minimumPrice;
     private $startPrice;
     private $prices;
 
-    function __construct($name, $startPrice, $minimumPrice){
+    function __construct($id, $name, $startPrice, $minimumPrice){
+        $this->id = $id;
         $this->name = $name;
         $this->startPrice = $startPrice;
         $this->minimumPrice = $minimumPrice;
@@ -53,6 +55,7 @@ class Product implements JsonSerializable {
 
     public function jsonSerialize(){
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'prices' => $this->prices,
         ];
@@ -65,7 +68,7 @@ $ptsd->execute();
 
 $products = array();
 foreach($ptsd->fetchAll() as $row){
-    $products[$row['id']] = new Product($row['name'], $row['start_price'], $row['minimum_price']);
+    $products[$row['id']] = new Product($row['id'], $row['name'], $row['start_price'], $row['minimum_price']);
 }
 
 // Get a list of all average buying amounts
