@@ -79,7 +79,7 @@ foreach($ptsd->fetchAll() as $row){
 
 
 // Get a list of amount per product per timeframe
-$ptsd = $pdo->prepare('SELECT drink_id, SUM(amount) as amount, FLOOR(UNIX_TIMESTAMP(date) / (10 * 60)) AS timeframe FROM orders GROUP BY drink_id, timeframe ORDER BY timeframe ASC');
+$ptsd = $pdo->prepare('SELECT * FROM order_history');
 $ptsd->execute();
 $amounts = array();
 foreach($ptsd->fetchAll(PDO::FETCH_ASSOC) as $row){
