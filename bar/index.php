@@ -30,7 +30,7 @@
                     <div class="row checkout-item" ng-repeat="item in bar.order">
                         <div class="col-xs-5">{{ item.name }}</div>
                         <div class="col-xs-2">{{ item.times }}</div>
-                        <div class="col-xs-2">{{ (item.times * item.price)/100 | currency:"&euro;" }}</div>
+                        <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
                         <div class="col-xs-3 ">
                             <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
                             <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
@@ -40,7 +40,7 @@
 					<div class="row checkout-total">
                         <!-- list of total drinks to be payed -->
                         <div class="col-xs-offset-5 col-xs-2">{{ getTotalItems() }}</div>
-                        <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice()/100 | currency:"&euro;" }}</div>
+                        <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
 					    <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay">Betalen</div>
                     </div>
 				</div>
@@ -61,7 +61,7 @@
 						<div class="col-md-12">
                             <button ng-repeat="item in bar.items | orderBy:'name' | filter:{ category: bar.itemFilter }" ng-click="addToOrder(item)"  ng-style="{'background-image': 'linear-gradient( rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7) ),url('+'../images/drinks/' + item.id+'.png' + ')'}" class="btn-sq-prod">
                                 {{ item.name }}
-                                <div class="btn-sq-prod-price">{{item.price/100| currency:"€":0}}</div>
+                                <div class="btn-sq-prod-price">{{item.price| currency:"€":0}}</div>
                             </button>
                             <!-- using JS buttons will be created-->
                         </div>
@@ -197,6 +197,8 @@
 		</div>
     <div class="footer">
 <hr>
+        <div class="footer-message">
+            <div class="footer-message-image">
         <!--FULL IMAGE UPLOAD-->
         <?php
         #error_reporting(E_ALL);
@@ -282,6 +284,8 @@
             /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
         }
         ?>
+            </div>
+        </div>
 <hr>
     </div>
 

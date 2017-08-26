@@ -66,8 +66,11 @@ angular.module('barApp', [])
                 // TODO fix this to a correct category system
                 for(var key in marktwerking.settings){
                     var val = marktwerking.settings[key];
-                    if(key.startsWith('Cat_') && key !== 'Cat_amount' && val !== ""){
-                        marktwerking.categories.push(marktwerking.settings[key]);
+                    if(key.startsWith('cat')  && val !== ""){
+                        var cat = val.split(",");
+                        for(i in cat) {
+                            marktwerking.categories.push(cat[i]);
+                        }
                     }
                 }
 

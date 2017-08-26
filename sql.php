@@ -16,14 +16,14 @@ $sql['select_drinks_start'] = "SELECT * FROM `drinks` WHERE `round_id` = '0' ";
 
 
 // prepare sql and bind parameters
-$statement = $db->prepare($sql['select_drinks_start']);
+$statement = $pdo->prepare($sql['select_drinks_start']);
 $statement->execute();
 $drinks_start = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
 
 // prepare sql and bind settings parameters
-$statement = $db->prepare($sql['select_settings_all']);
+$statement = $pdo->prepare($sql['select_settings_all']);
 $statement->execute();
 $settings = $statement->fetchAll(PDO::FETCH_KEY_PAIR);;
 
