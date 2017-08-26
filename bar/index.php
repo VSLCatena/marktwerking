@@ -6,7 +6,7 @@
 		<meta content="width=device-width, initial-scale=1" name="viewport">
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/bar.css" rel="stylesheet">
-		
+
 		<title></title>
 	</head>
 	<body>
@@ -95,9 +95,10 @@
 						<button class="close" data-dismiss="modal" type="button">&times;</button>
 						<h4 class="modal-title">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="#general">General</a></li>
-                                <li><a data-toggle="tab" href="#rounds">Rounds</a></li>
-                                <li><a data-toggle="tab" href="#drinks">Drinks</a></li>
+                                <li class="active"><a data-toggle="tab" href="#general">Algemeen</a></li>
+                                <li><a data-toggle="tab" href="#drinks">Artikelen</a></li>
+                                <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
+                                <li><a data-toggle="tab" href="#rounds">Marktwerking/Ronden</a></li>
                             </ul>
 						</h4>
 					</div>
@@ -110,68 +111,80 @@
                         <p>
 
                         <div class="radio">
-                            <label><input type="radio" name="settings-type-bar">Normale Bar</label>
+                            <label><input type="radio" name="settings-type-bar" ng-checked="">Normale Bar</label>
                         </div>
                         <div class="radio">
-                            <label><input type="radio" name="settings-type-bar">Marktwerking</label>
+                            <label><input type="radio" name="settings-type-bar" ng-checked="">Marktwerking</label>
                         </div>
-                        <button class="btn btn-info">Submit</button>
                         </p>
                     </div>
-                    <div id="drinks" class="tab-pane fade " ng-controller="barController as bar">
-                        <p>
-                        <div class="input-append" ng-repeat="items in bar.items">
-                            <input type="text" ng-model="items.name">
-                            <input type="text" class="settings-item-price" ng-model="items.price">
-                            <input type="text" class="settings-item-price" ng-model="items.price_min">
-                            <input type="text" ng-model="items.category">
-                            <label><input type="checkbox" value="">Activeren?</label>
-                            <button class="btn">Plaatje Upload</button>
-                            <a href='../images/drinks/{{items.name}}.png' />Foto</a>
-                            <button class="btn" ng-click="settingsItemRemove($index)">X</button>
-                        </div>
-                        <button class="btn btn-small" ng-click="settingsItemAdd()">Add</button>
-                        <button class="btn btn-info">Submit</button>
 
-
-
-                        </p>
-                    </div>
                     <div id="rounds" class="tab-pane fade">
                         <p>
 
                         <form>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i>Tijd ronde (min):</span>
-                                <input id="time-round" type="text" class="form-control" name="time-round" placeholder="Ronde duur" ng-model="settings.time.round">
+                                <span class="input-group-addon">Tijd ronde (min):</span>
+                                <input id="time-round" type="text" class="form-control" name="time-round" placeholder="" ng-model="settings.time_round">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i>Tijd totaal (uur):</span>
-                                <input id="time-total" type="text" class="form-control" name="time-total" placeholder="Totale duur" ng-model="settings.time.total">
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i>Aantal ronden:</span>
-                                <input id="round-total" type="text" class="form-control" name="round-total" placeholder="Totale duur" value="{{settings.time.total*60/settings.time.round}}" disabled>
+                                <span class="input-group-addon">Tijd totaal (uur):</span>
+                                <input id="time-total" type="text" class="form-control" name="time-total" placeholder="" ng-model="settings.time_total">
                             </div>
                             <br>
-                            <input type="submit" class="btn btn-info" value="Aanpassen">
+                            <div class="input-group">
+                                <span class="input-group-addon">Aantal ronden:</span>
+                                <input id="round-total" type="text" class="form-control" name="round-total" placeholder="" value="{{settings.time_total*60/settings.time_round}}" disabled>
+                            </div>
+
                         </form>
 
                         </p>
                     </div>
+
+                    <div id="drinks" class="tab-pane fade " ng-controller="barController as bar">
+                        <p>Naam - Prijs - Minimum - Categorie - Actief - Afbeelding - Verwijderen</p>
+                        <div class="input-append" ng-repeat="items in bar.items">
+                            {{items.id}}
+                            <input type="text" ng-model="items.name">
+                            <input type="text" class="settings-item-price" ng-model="items.price">
+                            <input type="text" class="settings-item-price" ng-model="items.price_min">
+                            <input type="text" ng-model="items.category">
+                            <label><input type="checkbox" ng-model="items.active" >Actief</label>
+                            <button class="btn">Plaatje Upload</button>
+                            <a href='../images/drinks/{{items.name}}.png' />Foto</a>
+                            <button class="btn" ng-click="settingsItemRemove($index)">X</button>
+                        </div>
+                        <button class="btn btn-small" ng-click="settingsItemAdd(items.name,items.price,items.price_min,items.category,items.active )">Data toevoegen + nieuwe rij</button>
+
+
+
+
+                    </div>
+
+
+                    <div id="drinks-mix" class="tab-pane fade">
+
+
+
+
+                    </div>
+
                 </div>
 
 
-							
+
 
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+
+                        <input type="submit" ng-click="submitSettings(marktwerking)" class="btn btn-info" value="Aanpassen">
+						<button class="btn btn-default" data-dismiss="modal" type="button">Sluiten</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
