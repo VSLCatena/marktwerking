@@ -1,6 +1,6 @@
 // Settings
 var updateTime = 30; // The update time in seconds
-var timeOffset = 5; // the amount of seconds we update LATER to avoid update issues=
+var timeOffset = 5; // the amount of seconds we update LATER to avoid update issues
 // End settings
 
 
@@ -9,15 +9,15 @@ var timeOffset = 5; // the amount of seconds we update LATER to avoid update iss
 var statistics = new Statistics(document.getElementById('statistics'));
 
 function load(){
-    //$("body").addClass("loading");
+    $("body").addClass("loading");
     $.getJSON('test.php', function(data){
-        //breakingNews().queue(function(){
+        breakingNews().queue(function(){
             drawList(data);
             statistics.draw(data);
 
-            //$("body").removeClass("loading");
-            //$(this).dequeue();
-        //});
+            $("body").removeClass("loading");
+            $(this).dequeue();
+        });
     });
 }
 
