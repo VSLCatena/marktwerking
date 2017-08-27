@@ -16,7 +16,8 @@ CREATE TABLE `drinks` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `start_price` decimal(8,2) UNSIGNED DEFAULT NULL,
-  `minimum_price` decimal(8,2) UNSIGNED DEFAULT NULL
+  `minimum_price` decimal(8,2) UNSIGNED DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE `drink_category` (
@@ -46,10 +47,13 @@ CREATE VIEW `order_history`  AS  select `orders`.`drink_id` AS `drink_id`,sum(`o
 
 
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `name` (`name`);
 
 ALTER TABLE `drinks`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `active` (`active`),
+  ADD KEY `name` (`name`);
 
 ALTER TABLE `drink_category`
   ADD UNIQUE KEY `index` (`drink_id`,`category_id`),
@@ -57,7 +61,8 @@ ALTER TABLE `drink_category`
 
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `drink_id` (`drink_id`);
+  ADD KEY `drink_id` (`drink_id`),
+  ADD KEY `date` (`date`);
 
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`key`);
