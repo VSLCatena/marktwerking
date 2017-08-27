@@ -133,10 +133,10 @@ angular.module('barApp', [])
 
         };
 
-        $scope.settingsItemAdd = function() {
+        $scope.settingsItemAdd = function(newData) {
             var d = new Date();
             var len = $scope.bar.items.length;
-            $scope.bar.items.push({id:len.toString(),round_id:'0',datetime:d });
+            //$scope.bar.items.push({id:len.toString(),round_id:'0',datetime:d });
             console.log(marktwerking.items);
         };
 

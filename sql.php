@@ -36,7 +36,7 @@ $data['drinks'] = $drinks;
 $query = $pdo->query("SELECT * FROM settings");
 $settings = array();
 foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
-    $settings[$row['key']] = $row['value'];
+    $settings[$row['setting']] = $row['value'];
 }
 $data['settings'] = $settings;
 

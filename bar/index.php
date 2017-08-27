@@ -59,7 +59,7 @@
                     <br>
 					<div  class="row products ">
 						<div class="col-md-12">
-                            <button ng-repeat="item in bar.items | orderBy:'name' | matchCategory: bar.itemFilter" ng-click="addToOrder(item)"  ng-style="{'background-image': 'linear-gradient( rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7) ),url('+'../images/drinks/' + item.name+'.png' + ')'}" class="btn-sq-prod">
+                            <button ng-repeat="item in bar.items | orderBy:'name' | matchCategory: bar.itemFilter" ng-click="addToOrder(item)"  ng-style="{'background-image': 'linear-gradient( rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7) ),url('+'../images/drinks/' + item.id+'.png' + ')'}" class="btn-sq-prod">
                                 {{ item.name }}
                                 <div class="btn-sq-prod-price">{{item.price | currency:"€":0}}</div>
                             </button>
