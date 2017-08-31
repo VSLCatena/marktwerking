@@ -22,6 +22,8 @@ class Product implements JsonSerializable {
      * @param array $roundAmounts the amount that have been sold on this product per round.
      * @param array $totalsPerRound the amount that have been sold in the complete round (So all products)
      * @param int $amountOfItems the amount of items that are in the game
+     *
+     * @return array prices per round
      */
     function calculate($roundAmounts, $totalsPerRound, $amountOfItems){
         $prices = array();

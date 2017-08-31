@@ -67,15 +67,29 @@
   height: 100px !important;
 }
 
+.products {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .btn-sq-prod {
   width: 150px !important;
   height: 150px !important;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    white-space: normal;
+    flex-basis: 150px;
+    flex-grow: 0;
+    flex-shrink: 0;
     background-size: cover;
     background-position: center center;
     color: #000;
     font-size: 18px;
     font-weight: bold;
     position: relative;
+    margin: 5px;
+    border: 1px solid black;
 }
 
 .btn-sq-prod-price {

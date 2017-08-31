@@ -7,7 +7,7 @@ angular.module('barApp', [])
             }
 
             angular.forEach(items, function(item) {
-                if(item.categories !== null && item.categories.indexOf(parseInt(category)) !== -1){
+                if(item.categories !== null && item.categories.indexOf(category) !== -1){
                     filtered.push(item);
                 }
             });
@@ -24,8 +24,6 @@ angular.module('barApp', [])
         marktwerking.interval;
 
         marktwerking.itemFilter = '';
-
-        $scope.update
 
         $scope.addToOrder = function(item) {
             var found = false;
@@ -75,7 +73,11 @@ angular.module('barApp', [])
                 console.debug(response.data);
                 marktwerking.categories = response.data.categories;
                 marktwerking.items = response.data.drinks;
+                for(var key in marktwerking.items){
+                    if (marktwerking.items[key].active==="1"){marktwerking.items[key].active=true;}
+                    else {marktwerking.items[key].active=false;}};
                 marktwerking.settings = response.data.settings;
+                console.debug(marktwerking.settings);
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
@@ -134,20 +136,45 @@ angular.module('barApp', [])
         };
 
         $scope.settingsItemAdd = function() {
-            var d = new Date();
             var len = $scope.bar.items.length;
-            $scope.bar.items.push({id:len.toString(),round_id:'0',datetime:d });
+            $scope.bar.items.push({});
             console.log(marktwerking.items);
         };
 
         $scope.submitSettings = function(marktwerking) {
 
         console.debug(marktwerking);
-        }
+        };
 
+        $scope.updateItemCategories = function(item){
+            item.categories = [];
+            $("#settingsItem"+item.id).find("option:selected").each(function() {
+                if($)
+                item.categories.push($(this).val());
+            });
+        };
 
+        marktwerking.updateSQL = function(){
+            sendData={category: marktwerking.categories, items:marktwerking.items, settings:marktwerking.settings };
+            sendJsonData = JSON.stringify(sendData);
+
+            $http({
+                method: 'POST',
+                url: '../sql.php',
+                data:  sendJsonData
+            }).then(function successCallback(response) {
+                // sueccs
+
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
+        };
+
+        $("#settings").on("hide.bs.modal", function () {
+            // put your default event here
+            marktwerking.updateSQL();
+        });
 
     });
-
-
 
