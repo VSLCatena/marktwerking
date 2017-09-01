@@ -14,7 +14,7 @@
 			<div class="row">
 				<div class="col-md-1 view">
 					<div class="btn-group-vertical">
-                        <a class="btn btn-primary btn-sq" href="../beamer.php"  type="button">Beamer</a>
+                        <a class="btn btn-primary btn-sq" href="../index.php" type="button">Beamer</a>
 						<button class="btn btn-primary btn-sq" data-target="#financial" data-toggle="modal" type="button">Financial</button>
 						<button class="btn btn-primary btn-sq" data-target="#settings" data-toggle="modal" type="button">Settings</button>
                         <a class="btn btn-primary btn-sq" href="./index.php?logout">Uitloggen</a>
