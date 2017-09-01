@@ -1,118 +1,212 @@
-<?php
-require_once('core.php');
-
-class Product implements JsonSerializable {
-    private $id;
-    private $name;
-    private $minimumPrice;
-    private $startPrice;
-    private $prices;
-
-    function __construct($id, $name, $startPrice, $minimumPrice){
-        $this->id = $id;
-        $this->name = $name;
-        $this->startPrice = $startPrice;
-        $this->minimumPrice = $minimumPrice;
-    }
-
-    /**
-     * This is the calculating function.
-     * This should contain the algorithm used to determine the prices.
-     *
-     * @param array $roundAmounts the amount that have been sold on this product per round.
-     * @param array $totalsPerRound the amount that have been sold in the complete round (So all products)
-     * @param int $amountOfItems the amount of items that are in the game
-     *
-     * @return array prices per round
-     */
-    function calculate($roundAmounts, $totalsPerRound, $amountOfItems){
-        $prices = array();
-        $prices[0] = $this->startPrice;
-
-        for($i = 0; $i < count($roundAmounts); $i++){
-            $percentage = $roundAmounts[$i] / ($totalsPerRound[$i] / $amountOfItems);
-
-            $prices[$i+1] = max(
-                $prices[$i] * max(
-                    log($percentage, 1.5),
-                    0.6
-                ),
-                $this->minimumPrice
-            );
-
-            // Round it to the nearest 5 cents
-            $prices[$i+1] = round($prices[$i+1]*20)/20;
-        }
-
-        $this->prices = $prices;
-    }
-
-    public function getPrices(){
-        return $this->prices;
-    }
-
-    public function getLatestPrice(){
-        return $this->prices[count($this->prices)-1];
-    }
-
-    public function jsonSerialize(){
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'prices' => $this->prices,
-        ];
-    }
-}
-
-// Create an array with all the products
-$ptsd = $pdo->prepare('SELECT * FROM drinks');
-$ptsd->execute();
-
-$products = array();
-foreach($ptsd->fetchAll() as $row){
-    $products[$row['id']] = new Product($row['id'], $row['name'], $row['start_price'], $row['minimum_price']);
-}
-
-// Get a list of all average buying amounts
-$ptsd = $pdo->prepare('SELECT SUM(amount) as amount, FLOOR(UNIX_TIMESTAMP(date) / (10 * 60)) AS timeframe FROM orders GROUP BY timeframe ORDER BY timeframe ASC');
-$ptsd->execute();
-$roundAmounts = array();
-
-foreach($ptsd->fetchAll() as $row){
-    $roundAmounts[$row['timeframe']] = $row['amount'];
-}
-
-
-// Get a list of amount per product per timeframe
-$ptsd = $pdo->prepare('SELECT * FROM order_history');
-$ptsd->execute();
-$amounts = array();
-foreach($ptsd->fetchAll(PDO::FETCH_ASSOC) as $row){
-    $amounts[$row['drink_id']][$row['timeframe']] = $row['amount'];
-}
-
-
-// We want to fill in the blanks, for when a product hasn't been bought all round
-foreach(array_keys($amounts) as $id){
-    // So first we fill in the blanks
-    foreach(array_keys($roundAmounts) as $timeframe){
-        if(!array_key_exists($timeframe, $amounts[$id])){
-            $amounts[$id][$timeframe] = 0;
-        }
-    }
-    ksort($amounts[$id]);
-
-    // Then we want to normalize the indexes from timeframes to normal numbered indexes.
-    $amounts[$id] = array_values($amounts[$id]);
-}
-
-// At last, we'll normalize the indexes of the averages
-$roundAmounts = array_values($roundAmounts);
-
-// Now send all the data to the products for calculation
-foreach($products as $id => $product){
-    $product->calculate($amounts[$id], $roundAmounts, count($products));
-}
-
-// Now we just want an array containing all the values without their keys. And use pretty printing because it's pretty <3
-echo json_encode(array_values($products), JSON_PRETTY_PRINT);
+[
+   {
+      "name":"Coebergh",
+      "prices":[
+         1,
+         1.5,
+         1.5,
+         0.9,
+         1.35,
+         0.95,
+         1.6,
+         0.9,
+         0.9,
+         0.9,
+         3.85,
+         2.85,
+         1.85,
+         0.9,
+         2,
+         1
+      ]
+   },
+   {
+      "name":"Fris",
+      "prices":[
+         0.8,
+         0.9,
+         0.9,
+         2.8,
+         1.8,
+         0.8,
+         2,
+         1,
+         0.5,
+         1.3,
+         1.3,
+         0.6,
+         1.6,
+         1.2,
+         1.3,
+         0.8
+      ]
+   },
+   {
+      "name":"Gin",
+      "prices":[
+         1.05,
+         1.8,
+         1.8,
+         1.05,
+         1.05,
+         1.05,
+         1.8,
+         1.05,
+         1.05,
+         1.05,
+         1.05,
+         1.05,
+         1.05,
+         2.45,
+         1.65,
+         1.05
+      ]
+   },
+   {
+      "name":"Ketel 1 Jenever",
+      "prices":[
+         4.2,
+         1.5,
+         1.5,
+         0.8,
+         0.8,
+         3.05,
+         2.05,
+         1.05,
+         0.8,
+         1.3,
+         0.8,
+         0.8,
+         0.9,
+         1.6,
+         0.8,
+         4.2
+      ]
+   },
+   {
+      "name":"Korenwolf",
+      "prices":[
+         2.2,
+         1.6,
+         1.6,
+         0.95,
+         0.95,
+         2.3,
+         1.3,
+         0.95,
+         0.95,
+         1.65,
+         1.15,
+         0.95,
+         1.85,
+         0.95,
+         1.05,
+         2.2
+      ]
+   },
+   {
+      "name":"Weihenstehan Kristal",
+      "prices":[
+         1.5,
+         2.2,
+         2.2,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5,
+         1.5
+      ]
+   },
+   {
+      "name":"Palm",
+      "prices":[
+         1.8,
+         1.4,
+         1.4,
+         0.8,
+         2.15,
+         1.15,
+         0.95,
+         6.15,
+         5.15,
+         4.15,
+         3.15,
+         2.15,
+         1.15,
+         0.8,
+         2.8,
+         1.8
+      ]
+   },
+   {
+      "name":"Somersby",
+      "prices":[
+         1.6,
+         2.2,
+         2.2,
+         1.6,
+         1.6,
+         1.6,
+         1.6,
+         1.8,
+         1.6,
+         1.6,
+         1.6,
+         1.6,
+         1.6,
+         3,
+         2,
+         1.6
+      ]
+   },
+   {
+      "name":"Vaasje",
+      "prices":[
+         1,
+         1.3,
+         1.3,
+         4.7,
+         3.7,
+         2.7,
+         1.7,
+         0.7,
+         2.65,
+         1.65,
+         0.7,
+         3.6,
+         3.5,
+         2.5,
+         2,
+         1
+      ]
+   },
+   {
+      "name":"Wodka",
+      "prices":[
+         1.1,
+         1.8,
+         1.8,
+         1.1,
+         1.3,
+         1.1,
+         1.7,
+         1.1,
+         1.1,
+         1.1,
+         1.1,
+         1.1,
+         1.2,
+         1.3,
+         1.1,
+         1.1
+      ]
+   }
+]

@@ -10,7 +10,7 @@ var statistics = new Statistics(document.getElementById('statistics'));
 
 function load(){
     $("body").addClass("loading");
-    $.getJSON('test.php', function(data){
+    $.getJSON('prices.php', function(data){
         breakingNews().queue(function(){
             drawList(data);
             statistics.draw(data);
