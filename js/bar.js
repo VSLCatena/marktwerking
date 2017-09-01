@@ -68,7 +68,7 @@ angular.module('barApp', [])
         marktwerking.setup = function(){
             $http({
                 method: 'GET',
-                url: '../sql.php'
+                url: './info.php'
             }).then(function successCallback(response) {
                 console.debug(response.data);
                 marktwerking.categories = response.data.categories;
@@ -89,7 +89,7 @@ angular.module('barApp', [])
         marktwerking.update = function() {
             $http({
                 method: 'GET',
-                url: '../test.php'
+                url: '../prices.php'
             }).then(function successCallback(response) {
                 console.debug(response.data);
                 // Loop over all items and associate each current price to the correct item
@@ -155,17 +155,16 @@ angular.module('barApp', [])
         };
 
         marktwerking.updateSQL = function(){
-            sendData={category: marktwerking.categories, items:marktwerking.items, settings:marktwerking.settings };
-            sendJsonData = JSON.stringify(sendData);
+            sendData={categories: marktwerking.categories, items: marktwerking.items, settings :marktwerking.settings };
 
-            $http({
-                method: 'POST',
-                url: '../sql.php',
-                data:  sendJsonData
-            }).then(function successCallback(response) {
+            $http.post(
+                './updateSettings.php',
+                $.param(sendData),
+                { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }}
+            ).success(function(response) {
                 // sueccs
 
-            }, function errorCallback(response) {
+            }).error(function(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });
