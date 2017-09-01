@@ -109,7 +109,7 @@
                                 <li><a data-toggle="tab" href="#category">Categorieen</a></li>
                                 <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
                                 <li><a data-toggle="tab" href="#rounds">Marktwerking/Ronden</a></li>
-                                <li><a data-toggle="tab" href="#stock">Voorraad</a></li>
+				<li><a data-toggle=
                             </ul>
 						</h4>
 					</div>
@@ -184,15 +184,10 @@
                                 </form>
                             </div>
 
-
                             <div id="drinks-mix" class="tab-pane fade">
 
                             </div>
                             <div id="category" class="tab-pane fade">
-                                <div class="row" ng-repeat="category in bar.categories">
-                                    <input class="col-sm-1 col-sm-offset-1" type="text" ng-model="category.name">
-
-                                </div>
                                 <div class="row">
                                     <div class="input-append col-md-4" ng-repeat="item in bar.items">
                                         <div class="h4" >{{item.name}}</div>
@@ -203,11 +198,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="stock" class="tab-pane fade in active">
-
-                            <p>hier komt ooit de voorraadinformatie</p>
-                            </div>
-
                         </div>
                     </div>
 
