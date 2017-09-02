@@ -141,6 +141,18 @@ angular.module('barApp', [])
             console.log(marktwerking.items);
         };
 
+
+        $scope.settingsCategoryRemove = function(index) {
+            $scope.bar.categories.splice(index, 1);
+
+
+        };
+
+        $scope.settingsCategoryAdd = function() {
+            var len = $scope.bar.categories.length;
+            $scope.bar.categories.push({id:len.toString()});
+        };
+
         $scope.submitSettings = function(marktwerking) {
 
         console.debug(marktwerking);

@@ -118,13 +118,15 @@
                             <div id="general" class="tab-pane fade in active">
 
                                 <div class="radio">
-                                    <label><input type="radio" name="settings-type-bar" ng-checked="">Normale Bar</label>
+                                    <!--Bar=0, Marktwerking=1, Streeplijst=2 -->
+                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="0">Normale Bar</label>
                                 </div>
                                 <div class="radio">
-                                    <label><input type="radio" name="settings-type-bar" ng-checked="">Marktwerking</label>
+                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="1">Marktwerking</label>
                                 </div>
                                 <div class="radio">
-                                    <label><input type="radio" name="settings-type-bar" ng-checked="">Streeplijst</label>
+                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="2">Streeplijst tot maximaal:</label>
+                                    <input class="" type="text" ng-model="bar.settings.limit">
                                 </div>
                             </div>
 
@@ -188,9 +190,11 @@
                             <div id="drinks-mix" class="tab-pane fade">
 
                             </div>
+                            <button class="btn btn-small" type="button" ng-click="settingsCategoryAdd()">Nieuwe Categorie</button>
                             <div id="category" class="tab-pane fade">
                                 <div class="row" ng-repeat="category in bar.categories">
                                     <input class="col-sm-1 col-sm-offset-1" type="text" ng-model="category.name">
+                                    <button class="btn btn-small" ng-click="settingsCategoryRemove($index)">X</button>
 
                                 </div>
                                 <div class="row">
@@ -203,7 +207,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="stock" class="tab-pane fade in active">
+                            <div id="stock" class="tab-pane fade">
 
                             <p>hier komt ooit de voorraadinformatie</p>
                             </div>
@@ -225,6 +229,7 @@
                 <div class="footer-message-image">
                     <!--FULL IMAGE UPLOAD-->
                     <?php
+                    $message="";
                     #error_reporting(E_ALL);
                     #ini_set('display_errors', 1);
                     //create a new clean array
@@ -256,7 +261,7 @@
                                 /*echo "File is an image - " . $check["mime"] . ".";*/
                                 $uploadOk = 1;
                             } else {
-                                echo "File is not an image.";
+                                $message= "File is not an image.";
                                 $uploadOk = 0;
                             }
                         }
@@ -270,7 +275,7 @@
                         }
             // Allow certain file formats
                         if ($imageFileType != "png") {
-                            echo "Sorry, PNG files are allowed.";
+                            $message= "Sorry, PNG files are allowed.";
                             $uploadOk = 0;
                         }
             // Check if $uploadOk is set to 0 by an error
@@ -301,11 +306,12 @@
 
 
                             } else {
-                                echo "<br>Sorry, there was an error uploading your file.";
+                                $message= "<br>Sorry, there was an error uploading your file.";
                             }
                         }
                         /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
                     }
+                    echo($message);
                     ?>
                 </div>
             </div>
