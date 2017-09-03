@@ -90,7 +90,7 @@ Statistics.prototype.drawItemNames = function(ctx){
         ctx.stroke();
         // And draw the icon
         ctx.save();
-        ctx.translate(10, itemIndex * 20 - 6);
+        ctx.translate(12.5, itemIndex * 20 - 6);
         ctx.rotate(Math.PI);
         self.drawGraphIcon(ctx, itemIndex, 0, 0, 4, 4);
         ctx.restore();
