@@ -80,12 +80,20 @@ Statistics.prototype.drawItemNames = function(ctx){
     ctx.textAlign = "left";
     ctx.fillStyle = "#000000";
     ctx.lineWidth = 2.5;
+    var self = this;
     items.forEach(function(item){
         ctx.strokeStyle = 'hsl(' + (360 / items.length * itemIndex) + ', 50%, 50%)';
+        ctx.fillStyle = 'hsl(' + (360 / items.length * itemIndex) + ', 50%, 50%)';
         ctx.beginPath();
         ctx.moveTo(0,itemIndex * 20 - 6);
         ctx.lineTo(25,itemIndex * 20 - 6);
         ctx.stroke();
+        // And draw the icon
+        ctx.save();
+        ctx.translate(10, itemIndex * 20 - 6);
+        ctx.rotate(Math.PI);
+        self.drawGraphIcon(ctx, itemIndex, 0, 0, 4, 4);
+        ctx.restore();
 
         ctx.fillText(item.name, 30, itemIndex * 20); // Draw text here
         itemIndex++;
@@ -105,6 +113,7 @@ Statistics.prototype.drawGraph = function(ctx){
     ctx.transform(1, 0, 0, -1, 0, graphHeight);
 
     this.drawGraphLayout(ctx);
+    var self = this;
 
     ctx.lineWidth = 2.5;
     ctx.lineJoin = 'round';
@@ -116,19 +125,55 @@ Statistics.prototype.drawGraph = function(ctx){
         var index = 0;
         ctx.beginPath();
         ctx.strokeStyle = 'hsl(' + (360 / items.length * itemIndex) + ', 50%, 50%)';
+        ctx.fillStyle = 'hsl(' + (360 / items.length * itemIndex) + ', 50%, 50%)';
         ctx.moveTo(0,0);
         item.prices.forEach(function(price) {
-            if (index == 0)
+            if (index === 0)
                 ctx.moveTo((index / (amount-1)) * graphWidth, price / maxPrice * graphHeight);
             else
                 ctx.lineTo((index / (amount-1)) * graphWidth, price / maxPrice * graphHeight);
             index++;
         });
         ctx.stroke();
+
+        // Now we draw the little icons for easy recognition
+        index = 0;
+        item.prices.forEach(function(price){
+            if(index !== 0) {
+                var pointX = index / (amount - 1) * graphWidth;
+                var pointY = price / maxPrice * graphHeight;
+                self.drawGraphIcon(ctx, itemIndex, pointX, pointY, 3.5, 5);
+            }
+            index++;
+        });
+
         itemIndex++;
     });
 
     ctx.restore();
+};
+
+Statistics.prototype.drawGraphIcon = function(ctx, index, x, y, xWidth, yWidth){
+    ctx.beginPath();
+    if(index % 4 === 0){
+        ctx.moveTo(x - xWidth*1.5, y);
+        ctx.lineTo(x, y + yWidth*1.5);
+        ctx.lineTo(x + xWidth*1.5, y);
+        ctx.lineTo(x, y - yWidth*1.5);
+    } else if(index % 4 === 1){
+        ctx.ellipse(x, y, xWidth, yWidth, 0, 0, 2 * Math.PI);
+    } else if(index % 4 === 2){
+        y += 1.8;
+        ctx.moveTo(x - xWidth*1.5, y - yWidth * 1.5);
+        ctx.lineTo(x, y + yWidth);
+        ctx.lineTo(x + xWidth*1.5, y - yWidth * 1.5);
+    } else if(index % 4 === 3){
+        ctx.moveTo(x - xWidth, y - yWidth);
+        ctx.lineTo(x - xWidth, y + yWidth);
+        ctx.lineTo(x + xWidth, y + yWidth);
+        ctx.lineTo(x + xWidth, y - yWidth);
+    }
+    ctx.fill();
 };
 
 Statistics.prototype.drawGraphLayout = function(ctx){
@@ -146,7 +191,6 @@ Statistics.prototype.drawGraphLayout = function(ctx){
     ctx.transform(1, 0, 0, -1, 0, 0);
     ctx.font = "bold 20pt Open Sans";
     ctx.textAlign = "center";
-    ctx.text
     ctx.fillText("Prijsverloop", 0, 0); // Draw text here
     ctx.restore();
 
