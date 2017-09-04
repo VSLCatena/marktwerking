@@ -1,3 +1,4 @@
+<?php include("./password_protect.php"); ?>
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors',1);
@@ -23,26 +24,92 @@ if (!empty($data)) {
         $stmt = $pdo->prepare("UPDATE `settings` SET `value` =? WHERE `settings`.`setting` = ?;");
         $stmt->execute(array($value,$key));
     }
-    //needs insert
+
+    //categories delete, update/insert
+    $array_del_id = array_column($data['categories'], 'id'); //extract ids from categories
+    $array_len = count($array_del_id); //count amount of cat id's
+    if ($array_len != 0){
+        $varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
+        $sql = "DELETE FROM categories WHERE id NOT IN (" . $varprep . ");"; //create sql
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($array_del_id);
+    }
     foreach ($data['categories'] as $key => $value) {
-        $stmt = $pdo->prepare("UPDATE `categories` SET `name` = ? WHERE `categories`.`id` = ?;");
-        $stmt->execute(array($value['name'],$value['id']));
+
+        $stmt = $pdo->prepare("
+            INSERT INTO `categories` (`id`,`name`)
+            VALUES (?,?) 
+            ON DUPLICATE KEY 
+            UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`);"
+        );
+        $stmt->execute(
+            array(
+                $value['id'],
+                $value['name']
+            )
+        );
     }
-    //needs insert
+
+    $array_del_id = array_column($data['items'], 'id'); //extract ids from items
+    $array_len = count($array_del_id); //count amount of item id's
+    if ($array_len != 0){
+        $varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
+        $sql = "DELETE FROM drinks WHERE id NOT IN (" . $varprep . ");"; //create sql
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($array_del_id);
+    }
     foreach ($data['items'] as $key => $value) {
-        if ($value['active']==true) {$value['active']="1";} else {$value['active']="0";}
-        //$stmt = $pdo->prepare("UPDATE `drinks` SET `name` = ?, `start_price` = ?, `minimum_price` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
-        //$stmt = $pdo->prepare("INSERT INTO `drinks` (id,name,start_price,minimum_price,active) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `name` = ?, `start_price` = ?, `minimum_price` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
-        $stmt->execute(array($value['name'],$value['start_price'],$value['minimum_price'],$value['active'],$value['id']));
+        if ($value['active']=='true') {$value['active']="1";} else {$value['active']="0";}
+        $stmt = $pdo->prepare("
+            INSERT INTO `drinks` (id,name,start_price,minimum_price,active)
+            VALUES (?,?,?,?,?) 
+            ON DUPLICATE KEY 
+            UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`), `start_price` = VALUES(`start_price`), `minimum_price` = VALUES(`minimum_price`), `active` = VALUES(`active`);"
+        );
+        $stmt->execute(
+            array(
+                $value['id'],
+                $value['name'],
+                $value['start_price'],
+                $value['minimum_price'],
+                $value['active']
+            )
+        );
     }
+
+
+    /*
+        //needs insert
+        foreach ($data['items'] as $key => $value) {
+            if ($value['active']==true) {$value['active']="1";} else {$value['active']="0";}
+            //$stmt = $pdo->prepare("UPDATE `drinks` SET `name` = ?, `start_price` = ?, `minimum_price` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
+
+            $stmt = $pdo->prepare("
+                INSERT INTO `drinks` (`id`,`name`,`start_price`,`minimum_price`,`active`)
+                VALUES (?,?,?,?,?)
+                ON DUPLICATE KEY
+                UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`), `start_price` = VALUES(`start_price`), `minimum_price` = VALUES(`minimum_price`), `active` = VALUES(`active`) ;"
+            );
+            $stmt->execute(
+                array(
+                    $value['id'],
+                    $value['name'],
+                    $value['start_price'],
+                    $value['minimum_price'],
+                    $value['active'],
+                )
+            );
+        }*/
 
     //first clear table of drinks&category
     $stmt = $pdo->prepare("TRUNCATE TABLE `drink_category`;");
     $stmt->execute();
     foreach ($data['items'] as $key => $value) {
-        foreach ($value['categories'] as $key2 => $value2) {
-            $stmt = $pdo->prepare("INSERT INTO `drink_category` (`drink_id`, `category_id`) VALUES (?, ?);");
-            $stmt->execute(array($value['id'],$value2));
+        if ($value['categories']){
+            foreach ($value['categories'] as $key2 => $value2) {
+                $stmt = $pdo->prepare("INSERT INTO `drink_category` (`drink_id`, `category_id`) VALUES (?, ?);");
+                $stmt->execute(array($value['id'], $value2));
+            }
         }
 
     }
