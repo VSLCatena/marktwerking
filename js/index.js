@@ -54,7 +54,7 @@ function drawList(data){
 
     data.forEach(function(item){
        html += '<div class="col-xs-9">' + item.name + '</div>' +
-           '<div class="col-xs-3 text-right">' + item.prices[item.prices.length - 1].toFixed(2) +'</div>';
+           '<div class="col-xs-3 text-right">&euro;' + item.prices[item.prices.length - 1].toFixed(2) +'</div>';
     });
 
     $("#price-list").html(html);
