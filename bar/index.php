@@ -42,12 +42,17 @@
                         <!-- list of total drinks to be payed -->
                         <div class="col-xs-offset-5 col-xs-2">{{ getTotalItems() }}</div>
                         <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
-					    <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay">Betalen</div>
+					    <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
                     </div>
 				</div>
 
 				<div class="col-md-7">
+                    <div class="row">
+                        <div class="col-xs-offset-2 col-xs-2 timer" id="timer" >4 min. 08 sec.</div>
+                        <div class="col-xs-2 rounds" >Ronde x / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
 
+
+                    </div>
 					<div class="row category">
 						<div class="col-md-12">
 							<div class="btn-group btn-group-justified cat">
@@ -74,6 +79,15 @@
 					</div>
 				</div>
 			</div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-1 orderlist">
+                <div class="row">
+                    <div class="col-xs-offset-3 col-xs-2">Vorige bestelling:</div>
+                    <div class="col-xs-2">{{bar.order_prev.amount}}</div>
+                    <div class="col-xs-3 checkout-total-price" >{{ bar.order_prev.total| currency:"&euro;" }}</div>
+                </div>
+            </div>
+        </div>
 		</div><!-- Modal -->
 		<div class="modal fade" id="financial" role="dialog">
 			<div class="modal-dialog modal-lg">
@@ -108,8 +122,8 @@
                                 <li><a data-toggle="tab" href="#drinks">Artikelen</a></li>
                                 <li><a data-toggle="tab" href="#category">Categorieen</a></li>
                                 <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
-                                <li><a data-toggle="tab" href="#rounds">Marktwerking/Ronden</a></li>
                                 <li><a data-toggle="tab" href="#stock">Voorraad</a></li>
+                                <li><a data-toggle="tab" href="#marktwerking">Marktwerking</a></li>
                             </ul>
 						</h4>
 					</div>
@@ -130,7 +144,7 @@
                                 </div>
                             </div>
 
-                            <div id="rounds" class="tab-pane fade">
+                            <div id="marktwerking" class="tab-pane fade">
 
                                 <form>
                                     <div class="input-group">
@@ -146,6 +160,8 @@
                                         <span class="input-group-addon">Aantal ronden:</span>
                                         <input id="round-total" type="text" class="form-control" name="round-total" placeholder="" value="{{bar.settings.time_total*60/bar.settings.time_round}}" disabled>
                                     </div>
+                                    <br>
+                                    <button class="btn btn-danger" ng-click="settingsMarktwerkingReset()">Reset Marktwerking</button>
 
                                 </form>
                             </div>
@@ -188,17 +204,28 @@
 
 
                             <div id="drinks-mix" class="tab-pane fade">
-
+<!--                                <div class="row">-->
+<!--                                    <div class="input-append col-md-3" ng-repeat="item_mix in bar.items" ng-if="item_mix.mix!=false">-->
+<!--                                        <div class="h4" >{{item_mix.name}}</div>-->
+<!--                                        <select name="mix" class="form-control" id="settingsMix{{ item_mix.id }}" ng-model="dummy" ng-change="updateMixDrinks(item_mix)" multiple>-->
+<!--                                            <option value="{{ item.id }}" ng-repeat="item in bar.items | filter : item.name!=''| filter : item.mix!=true" ng-selected="item_mix.mix_drinks.indexOf(item.id) !== -1">{{item.name}}</option>-->
+<!--                                        </select>-->
+<!---->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
-                            <button class="btn btn-small" type="button" ng-click="settingsCategoryAdd()">Nieuwe Categorie</button>
+
                             <div id="category" class="tab-pane fade">
-                                <div class="row" ng-repeat="category in bar.categories">
-                                    <input class="col-sm-1 col-sm-offset-1" type="text" ng-model="category.name">
-                                    <button class="btn btn-small" ng-click="settingsCategoryRemove($index)">X</button>
+                                <button class="btn btn-small" type="button" ng-click="settingsCategoryAdd()">Nieuwe Categorie</button>
+                                <div class="row" >
+                                    <div class="col-sm-2" ng-repeat="category in bar.categories">
+                                        <input  type="text" ng-model="category.name">
+                                        <button class="btn btn-small" ng-click="settingsCategoryRemove($index)">X</button>
+                                    </div>
 
                                 </div>
                                 <div class="row">
-                                    <div class="input-append col-md-4" ng-repeat="item in bar.items">
+                                    <div class="input-append col-md-3" ng-repeat="item in bar.items" ng-if="item.active!=false" >
                                         <div class="h4" >{{item.name}}</div>
                                         <select name="category" class="form-control" id="settingsItem{{ item.id }}" ng-model="dummy" ng-change="updateItemCategories(item)" multiple>
                                            <option value="{{ category.id }}" ng-repeat="category in bar.categories" ng-selected="item.categories.indexOf(category.id) !== -1">{{category.name}}</option>
@@ -226,103 +253,105 @@
         <div class="footer">
             <hr>
             <div class="footer-message">
-                <div class="footer-message-image">
-                    <!--FULL IMAGE UPLOAD-->
-                    <?php
-                    $message="";
-                    #error_reporting(E_ALL);
-                    #ini_set('display_errors', 1);
-                    //create a new clean array
-                    $files = [];
-                    foreach ($_FILES as $key=>$value) {
-                        if ($value['size']!=0 && $value['error']==0){
-                            $n=count($files);
-                            $files[$n]=$value;
-                            $files[$n]['name']=$key . ".png";
-                            $n+=1;
+                <div class="footer-message">
+                    <div class="footer-message-image">
+                        <!--FULL IMAGE UPLOAD-->
+                        <?php
+                        $message="";
+                        #error_reporting(E_ALL);
+                        #ini_set('display_errors', 1);
+                        //create a new clean array
+                        $files = [];
+                        foreach ($_FILES as $key=>$value) {
+                            if ($value['size']!=0 && $value['error']==0){
+                                $n=count($files);
+                                $files[$n]=$value;
+                                $files[$n]['name']=$key . ".png";
+                                $n+=1;
+                            }
                         }
-                    }
 
 
-                    $target_dir = "../images/drinks/";
-                    foreach ($files as $key=>$value) {
+                        $target_dir = "../images/drinks/";
+                        foreach ($files as $key=>$value) {
 
 
-                        $target_file = $target_dir . basename($files[$key]["name"]);
-                        $uploadOk = 1;
-                        $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-            // Check if image file is a actual image or fake image
+                            $target_file = $target_dir . basename($files[$key]["name"]);
+                            $uploadOk = 1;
+                            $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+                            // Check if image file is a actual image or fake image
 
 
-                        if (isset($_POST["submit"])) {
+                            if (isset($_POST["submit"])) {
 
-                            $check = getimagesize($files[$key]["tmp_name"]);
-                            if ($check !== false) {
-                                /*echo "File is an image - " . $check["mime"] . ".";*/
-                                $uploadOk = 1;
-                            } else {
-                                $message= "File is not an image.";
+                                $check = getimagesize($files[$key]["tmp_name"]);
+                                if ($check !== false) {
+                                    /*echo "File is an image - " . $check["mime"] . ".";*/
+                                    $uploadOk = 1;
+                                } else {
+                                    $message= "File is not an image.";
+                                    $uploadOk = 0;
+                                }
+                            }
+
+
+                            // Check file size
+                            $max_size = 300000;
+                            if ($files[$key]["size"] > $max_size) {
+                                $message= "Sorry, your file is too large. <br>" . $max_size / 1000 . "kb is allowed";
                                 $uploadOk = 0;
                             }
-                        }
-
-
-            // Check file size
-                        $max_size = 300000;
-                        if ($files[$key]["size"] > $max_size) {
-                            echo "Sorry, your file is too large. <br>" . $max_size / 1000 . "kb is allowed";
-                            $uploadOk = 0;
-                        }
-            // Allow certain file formats
-                        if ($imageFileType != "png") {
-                            $message= "Sorry, PNG files are allowed.";
-                            $uploadOk = 0;
-                        }
-            // Check if $uploadOk is set to 0 by an error
-                        if ($uploadOk == 0) {
-                            echo "<br>Sorry, your file was not uploaded.";
-            // if everything is ok, try to upload file
-                        } else {
-                            unlink("$target_file");
-                            if (move_uploaded_file($files[$key]["tmp_name"], $target_file)) {
-                                /*echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";*/
-
-                                $im = new imagick($target_file);
-                                $imageprops = $im->getImageGeometry();
-                                $width = $imageprops['width'];
-                                $height = $imageprops['height'];
-                                if($width > $height){
-                                    $newHeight = 200;
-                                    $newWidth = (200 / $height) * $width;
-                                }else{
-                                    $newWidth = 200;
-                                    $newHeight = (200 / $width) * $height;
-                                }
-                                $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
-                                $im->cropImage (200,200,0,0);
-                                $im->writeImage( $target_file );
-                                /* echo '<img src=' . $target_file . '>';*/
-
-
-
-                            } else {
-                                $message= "<br>Sorry, there was an error uploading your file.";
+                            // Allow certain file formats
+                            if ($imageFileType != "png") {
+                                $message= "Sorry, PNG files are allowed.";
+                                $uploadOk = 0;
                             }
+                            // Check if $uploadOk is set to 0 by an error
+                            if ($uploadOk == 0) {
+                                $message="<br>Sorry, your file was not uploaded.";
+                                // if everything is ok, try to upload file
+                            } else {
+                                unlink("$target_file");
+                                if (move_uploaded_file($files[$key]["tmp_name"], $target_file)) {
+                                    /*echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";*/
+
+                                    $im = new imagick($target_file);
+                                    $imageprops = $im->getImageGeometry();
+                                    $width = $imageprops['width'];
+                                    $height = $imageprops['height'];
+                                    if($width > $height){
+                                        $newHeight = 200;
+                                        $newWidth = (200 / $height) * $width;
+                                    }else{
+                                        $newWidth = 200;
+                                        $newHeight = (200 / $width) * $height;
+                                    }
+                                    $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
+                                    $im->cropImage (200,200,0,0);
+                                    $im->writeImage( $target_file );
+                                    /* echo '<img src=' . $target_file . '>';*/
+
+
+
+                                } else {
+                                    $message= "<br>Sorry, there was an error uploading your file.";
+                                }
+                            }
+                            /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
                         }
-                        /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
-                    }
-                    echo($message);
-                    ?>
+                        echo($message);
+                        ?>
+                    </div>
                 </div>
+                <hr>
             </div>
-            <hr>
-        </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.js"></script>
-        <script src="../js/bar.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.js"></script>
+            <script src="../js/bar.js"></script>
+
 
 
     </body>
