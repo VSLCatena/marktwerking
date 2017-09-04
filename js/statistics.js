@@ -5,6 +5,7 @@ var Statistics = function(element){
     this.maxPrice = 2;
     this.graphWidth = 0;
     this.graphHeight = 0;
+    this.animateTick = 0;
 
     this.fakeImage = null;
     this.init();
@@ -28,7 +29,11 @@ Statistics.prototype.draw = function(items){
     this.drawCtx(fakeCtx, items);
 
     var imageData = fakeCtx.getImageData(0, 0, fakeCtx.canvas.width, fakeCtx.canvas.height);
-    this.el.getContext("2d").putImageData(imageData, 0, 0);
+    var ctx = this.el.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);
+
+    this.animateTick = 0;
+    this.animate(ctx);
 };
 
 Statistics.prototype.drawCtx = function(ctx, items){
@@ -113,7 +118,52 @@ Statistics.prototype.drawGraph = function(ctx){
     ctx.transform(1, 0, 0, -1, 0, graphHeight);
 
     this.drawGraphLayout(ctx);
+
+    ctx.restore();
+};
+
+Statistics.prototype.animate = function(ctx){
+    if(this.animateTick <= 100) {
+        var fakeCanvas = document.createElement("CANVAS");
+        var fakeCtx = fakeCanvas.getContext("2d");
+        fakeCtx.canvas.width = this.el.width;
+        fakeCtx.canvas.height = this.el.height;
+        ctx.save();
+        ctx.transform(1, 0, 0, 0.8, 50, ctx.canvas.height - this.graphHeight);
+        ctx.transform(1, 0, 0, -1, 0, this.graphHeight);
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0,0,this.graphWidth,this.graphHeight);
+
+
+        // faint lines for price indication
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#999";
+        ctx.beginPath();
+        for(var i = 2; i <= this.maxPrice; i += 2){
+            ctx.moveTo(0, this.graphHeight/this.maxPrice * i);
+            ctx.lineTo(this.graphWidth, this.graphHeight/this.maxPrice * i);
+        }
+        ctx.stroke();
+
+
+        this.drawGraphLines(fakeCtx);
+        ctx.drawImage(fakeCanvas, 0, 0, fakeCtx.canvas.width/100*this.animateTick, fakeCtx.canvas.height, 0, 0, fakeCtx.canvas.width/100*this.animateTick, fakeCtx.canvas.height);
+        ctx.restore();
+        setTimeout(this.animate.bind(this, ctx), 10);
+        this.animateTick++;
+    }
+};
+
+Statistics.prototype.drawGraphLines = function(ctx){
+    var maxPrice = this.maxPrice;
+    var amount = this.amount;
+    var items = this.data;
+
+    var graphWidth = this.graphWidth;
+    var graphHeight = this.graphHeight;
     var self = this;
+
 
     ctx.lineWidth = 2.5;
     ctx.lineJoin = 'round';
@@ -149,8 +199,6 @@ Statistics.prototype.drawGraph = function(ctx){
 
         itemIndex++;
     });
-
-    ctx.restore();
 };
 
 Statistics.prototype.drawGraphIcon = function(ctx, index, x, y, xWidth, yWidth){
@@ -193,16 +241,6 @@ Statistics.prototype.drawGraphLayout = function(ctx){
     ctx.textAlign = "center";
     ctx.fillText("Prijsverloop", 0, 0); // Draw text here
     ctx.restore();
-
-    // faint lines for price indication
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#999";
-    ctx.beginPath();
-    for(var i = 2; i <= maxPrice; i += 2){
-        ctx.moveTo(0, graphHeight/maxPrice * i);
-        ctx.lineTo(graphWidth, graphHeight/maxPrice * i);
-    }
-    ctx.stroke();
 
     ctx.font = "10pt Open Sans";
     ctx.textAlign = "center";
