@@ -221,6 +221,7 @@ angular.module('barApp', [])
         $("#settings").on("hide.bs.modal", function () {
             // put your default event here
             marktwerking.updateSQL();
+            //uncomment dit hieronder nadat hij af is.
             //location.reload(true)
         });
 
