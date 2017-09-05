@@ -181,28 +181,24 @@ angular.module('barApp', [])
         };
 
         $scope.settingsItemRemove = function(index) {
-            var len = $scope.bar.items.length-1;
-            if (len===index){$scope.bar.items.splice(index, 1);}
-            else {$scope.bar.items.splice(index, 1,{round_id:'0',id:index.toString()});}
+            marktwerking.items.splice(index, 1);
 
         };
 
         $scope.settingsItemAdd = function() {
-            var len = $scope.bar.items.length;
-            $scope.bar.items.push({});
+            var len = marktwerking.items.length;
+            marktwerking.items.push({name:"",start_price:0,minimum_price:0,active:false});
             console.log(marktwerking.items);
         };
 
 
         $scope.settingsCategoryRemove = function(index) {
-            $scope.bar.categories.splice(index, 1);
-
+            marktwerking.categories.splice(index, 1);
 
         };
 
         $scope.settingsCategoryAdd = function() {
-            var len = $scope.bar.categories.length;
-            $scope.bar.categories.push({id:len.toString()});
+            marktwerking.categories.push({name:"".toString()});
         };
 
         $scope.updateItemCategories = function(item){
