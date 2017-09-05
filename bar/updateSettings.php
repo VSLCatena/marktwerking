@@ -26,56 +26,59 @@ if (!empty($data)) {
     }
 
     //categories delete, update/insert
-    $array_del_id = array_column($data['categories'], 'id'); //extract ids from categories
-    $array_len = count($array_del_id); //count amount of cat id's
-    if ($array_len != 0){
-        $varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
-        $sql = "DELETE FROM categories WHERE id NOT IN (" . $varprep . ");"; //create sql
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($array_del_id);
-    }
-    foreach ($data['categories'] as $key => $value) {
+	if ($data['categories']){
+			$array_del_id = array_column($data['categories'], 'id'); //extract ids from categories
+			$array_len = count($array_del_id); //count amount of cat id's
+			if ($array_len != 0){
+				$varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
+				$sql = "DELETE FROM categories WHERE id NOT IN (" . $varprep . ");"; //create sql
+				$stmt = $pdo->prepare($sql);
+				$stmt->execute($array_del_id);
+			}
+			foreach ($data['categories'] as $key => $value) {
 
-        $stmt = $pdo->prepare("
-            INSERT INTO `categories` (`id`,`name`)
-            VALUES (?,?) 
-            ON DUPLICATE KEY 
-            UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`);"
-        );
-        $stmt->execute(
-            array(
-                $value['id'],
-                $value['name']
-            )
-        );
-    }
-
-    $array_del_id = array_column($data['items'], 'id'); //extract ids from items
-    $array_len = count($array_del_id); //count amount of item id's
-    if ($array_len != 0){
-        $varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
-        $sql = "DELETE FROM drinks WHERE id NOT IN (" . $varprep . ");"; //create sql
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($array_del_id);
-    }
-    foreach ($data['items'] as $key => $value) {
-        if ($value['active']=='true') {$value['active']="1";} else {$value['active']="0";}
-        $stmt = $pdo->prepare("
-            INSERT INTO `drinks` (id,name,start_price,minimum_price,active)
-            VALUES (?,?,?,?,?) 
-            ON DUPLICATE KEY 
-            UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`), `start_price` = VALUES(`start_price`), `minimum_price` = VALUES(`minimum_price`), `active` = VALUES(`active`);"
-        );
-        $stmt->execute(
-            array(
-                $value['id'],
-                $value['name'],
-                $value['start_price'],
-                $value['minimum_price'],
-                $value['active']
-            )
-        );
-    }
+				$stmt = $pdo->prepare("
+					INSERT INTO `categories` (`id`,`name`)
+					VALUES (?,?) 
+					ON DUPLICATE KEY 
+					UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`);"
+				);
+				$stmt->execute(
+					array(
+						$value['id'],
+						$value['name']
+					)
+				);
+			};
+	}
+	if ($data['items']){
+		$array_del_id = array_column($data['items'], 'id'); //extract ids from items
+		$array_len = count($array_del_id); //count amount of item id's
+		if ($array_len != 0){
+			$varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
+			$sql = "DELETE FROM drinks WHERE id NOT IN (" . $varprep . ");"; //create sql
+			$stmt = $pdo->prepare($sql);
+			$stmt->execute($array_del_id);
+		}
+		foreach ($data['items'] as $key => $value) {
+			if ($value['active']=='true') {$value['active']="1";} else {$value['active']="0";}
+			$stmt = $pdo->prepare("
+				INSERT INTO `drinks` (id,name,start_price,minimum_price,active)
+				VALUES (?,?,?,?,?) 
+				ON DUPLICATE KEY 
+				UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`), `start_price` = VALUES(`start_price`), `minimum_price` = VALUES(`minimum_price`), `active` = VALUES(`active`);"
+			);
+			$stmt->execute(
+				array(
+					$value['id'],
+					$value['name'],
+					$value['start_price'],
+					$value['minimum_price'],
+					$value['active']
+				)
+			);
+		}
+	}
 
 
     /*
