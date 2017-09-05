@@ -22,7 +22,11 @@ angular.module('barApp', [])
         marktwerking.order = [];
         marktwerking.order_prev =[];
         marktwerking.settings = [];
+        marktwerking.round = 0;
         marktwerking.interval;
+        marktwerking.timeToUpdate = 0;
+        marktwerking.updateTime = 10 * 60;
+        marktwerking.timeOffset = 5;
 
         marktwerking.itemFilter = '';
 
@@ -117,6 +121,7 @@ angular.module('barApp', [])
             }).then(function successCallback(response) {
                 console.debug(response.data);
                 // Loop over all items and associate each current price to the correct item
+                marktwerking.round = response.data[0].prices.length;
                 response.data.forEach(function(dataItem){
                     marktwerking.items.forEach(function(item, index, object){
                         if(dataItem.id === item.id){
@@ -129,10 +134,33 @@ angular.module('barApp', [])
                 // or server returns response with an error status.
             });
         };
-        marktwerking.update();
 
-        // TODO make this sync up with the update timer
-        marktwerking.interval = $interval(marktwerking.update, 5000);
+        marktwerking.pad = function(n, width, z) {
+            z = z || '0';
+            n = n + '';
+            return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        }
+
+        marktwerking.tick = function() {
+            if(new Date().getTime() > marktwerking.timeToUpdate){
+                marktwerking.update();
+
+                marktwerking.timeToUpdate = (parseInt(new Date().getTime() / (marktwerking.updateTime * 1000)) + 1) * marktwerking.updateTime * 1000;
+
+                // We update a couple of seconds later for possible update issues and such
+                marktwerking.timeToUpdate += marktwerking.timeOffset * 1000;
+                return;
+            }
+
+            // Update timer on top
+            var secondsLeft = ((marktwerking.timeToUpdate - new Date().getTime()) / 1000) % marktwerking.updateTime;
+            var minutes = parseInt(secondsLeft / 60);
+            var seconds = Math.floor(secondsLeft % 60);
+            $("#timer").html(marktwerking.pad(minutes, 2) + " min. " + marktwerking.pad(seconds, 2) + " sec.");
+
+        };
+
+        marktwerking.interval = $interval(marktwerking.tick, 1000);
 
 
 

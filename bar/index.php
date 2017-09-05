@@ -48,8 +48,8 @@
 
 				<div class="col-md-7">
                     <div class="row">
-                        <div class="col-xs-offset-2 col-xs-2 timer" id="timer" >4 min. 08 sec.</div>
-                        <div class="col-xs-2 rounds" >Ronde x / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
+                        <div class="col-xs-offset-2 col-xs-4 timer" id="timer" >4 min. 08 sec.</div>
+                        <div class="col-xs-4 rounds" >Ronde {{ bar.round }} / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
 
 
                     </div>
