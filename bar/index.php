@@ -10,49 +10,72 @@
 		<title></title>
 	</head>
 	<body ng-controller="barController as bar">
-		<div class="container-fluid">
+    <div class="navbar navbar-default navbar-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="navbar-right navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../index.php" type="button">Beamer</a></li>
+                    <li><a data-target="#financial" data-toggle="modal" type="button">Financial</a></li>
+                    <li><a data-target="#settings" data-toggle="modal" type="button">Settings</a></li>
+                    <li><a href="./index.php?logout">Uitloggen</a></li>
+                </ul>
+            </div>
+            <div class="nav navbar-nav navbar-left">
+                <div class="navbar-text" id="timer" >4 min. 08 sec.</div>
+                <div class="navbar-text">Ronde {{ bar.round }} / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
+            </div>
+        </div>
+    </div>
+		<div class="container">
 			<div class="row">
-				<div class="col-md-1 view">
-					<div class="btn-group-vertical">
-                        <a class="btn btn-primary btn-sq" href="../index.php" type="button">Beamer</a>
-						<button class="btn btn-primary btn-sq" data-target="#financial" data-toggle="modal" type="button">Financial</button>
-						<button class="btn btn-primary btn-sq" data-target="#settings" data-toggle="modal" type="button">Settings</button>
-                        <a class="btn btn-primary btn-sq" href="./index.php?logout">Uitloggen</a>
-					</div>
-				</div>
-				<div class="col-md-4 orderlist">
-                    <div class="row checkout-header">
-                        <div class="col-xs-5">Naam:</div>
-                        <div class="col-xs-2">Aantal</div>
-                        <div class="col-xs-3">Prijs</div>
-                    </div>
-                    <hr>
-                    <div class="checkout-content">
-                    <div class="row checkout-item" ng-repeat="item in bar.order">
-                        <div class="col-xs-5">{{ item.name }}</div>
-                        <div class="col-xs-2">{{ item.times }}</div>
-                        <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
-                        <div class="col-xs-3 ">
-                            <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
-                            <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
+				<div class="col-md-5">
+                    <div class="orderlist row">
+                        <div class="col-xs-12">
+                            <div class="row checkout-header">
+                                <div class="col-xs-5">Naam:</div>
+                                <div class="col-xs-2">Aantal</div>
+                                <div class="col-xs-3">Prijs</div>
+                            </div>
+                            <hr>
+                            <div class="checkout-content">
+                            <div class="row checkout-item" ng-repeat="item in bar.order">
+                                <div class="col-xs-5">{{ item.name }}</div>
+                                <div class="col-xs-2">{{ item.times }}</div>
+                                <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
+                                <div class="col-xs-3 ">
+                                    <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
+                                    <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="row checkout-total">
+                                <!-- list of total drinks to be payed -->
+                                <div class="col-xs-offset-5 col-xs-2">{{ getTotalItems() }}</div>
+                                <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
+                                <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
+                            </div>
                         </div>
                     </div>
-                    </div>
-					<div class="row checkout-total">
-                        <!-- list of total drinks to be payed -->
-                        <div class="col-xs-offset-5 col-xs-2">{{ getTotalItems() }}</div>
-                        <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
-					    <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
+                    <div class="row">
+                        <div class="col-xs-12 orderlist">
+                            <div class="row">
+                                <div class="col-xs-5">Vorige bestelling:</div>
+                                <div class="col-xs-2">{{bar.order_prev.amount}}</div>
+                                <div class="col-xs-5 checkout-total-price" >{{ bar.order_prev.total| currency:"&euro;" }}</div>
+                            </div>
+                        </div>
                     </div>
 				</div>
 
 				<div class="col-md-7">
-                    <div class="row">
-                        <div class="col-xs-offset-2 col-xs-4 timer" id="timer" >4 min. 08 sec.</div>
-                        <div class="col-xs-4 rounds" >Ronde {{ bar.round }} / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
-
-
-                    </div>
 					<div class="row category">
 						<div class="col-md-12">
 							<div class="btn-group btn-group-justified cat">
@@ -78,15 +101,6 @@
 					</div>
 				</div>
 			</div>
-        <div class="row">
-            <div class="col-md-4 col-md-offset-1 orderlist">
-                <div class="row">
-                    <div class="col-xs-offset-3 col-xs-2">Vorige bestelling:</div>
-                    <div class="col-xs-2">{{bar.order_prev.amount}}</div>
-                    <div class="col-xs-3 checkout-total-price" >{{ bar.order_prev.total| currency:"&euro;" }}</div>
-                </div>
-            </div>
-        </div>
 		</div><!-- Modal -->
 		<div class="modal fade" id="financial" role="dialog">
 			<div class="modal-dialog modal-lg">
