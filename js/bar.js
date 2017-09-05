@@ -210,20 +210,23 @@ angular.module('barApp', [])
         };
 
         $scope.settingsMarktwerkingReset = function() {
-            sendData={reset: true};
-            $http.post(
-                './resetMarktwerking.php',
-                $.param(sendData),
-                { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }}
-            ).success(function(response) {
-                // sueccs
 
-            }).error(function(response) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-            });
-            marktwerking.order = []
-            location.reload(true)
+            if (confirm("Reset Marktwerking?")) {
+                sendData = {reset: true};
+                $http.post(
+                    './resetMarktwerking.php',
+                    $.param(sendData),
+                    {headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
+                ).success(function (response) {
+                    marktwerking.order = []
+
+                }).error(function (response) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+
+                location.reload(true)
+            }
         };
 
         marktwerking.updateSQL = function(){
