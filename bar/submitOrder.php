@@ -15,8 +15,8 @@ $data=$_POST;
 if (!empty($data)) {
 
     foreach ($data['orders'] as $key => $value) {
-        $stmt = $pdo->prepare("INSERT INTO `orders` (`drink_id`,`amount`) VALUES (?,?) ;");
-        $stmt->execute(array($value['id'],$value['times']));
+        $stmt = $pdo->prepare("INSERT INTO orders (drink_id, amount, date) VALUES (?, ?, ?) ;");
+        $stmt->execute(array($value['id'], $value['times'], date("Y-m-d H:i:s", time())));
     }
 
 }

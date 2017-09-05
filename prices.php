@@ -32,7 +32,7 @@ GROUP BY orders.drink_id, floor((unix_timestamp(date)) / ?)
 ORDER BY floor((unix_timestamp(date)) / ?)');
 // We round to the closest timeframe, this is so both the bar and the projector will have accurate results.
 // We just need to make sure they're both loaded AFTER this timeframe happened.
-$ptsd->execute(array($timeframe, date("Y-m-d H:i:s", round(time() / $timeframe) * $timeframe), $timeframe, $timeframe));
+$ptsd->execute(array($timeframe, date("Y-m-d H:i:s", floor(time() / $timeframe) * $timeframe), $timeframe, $timeframe));
 
 $orderHistory = array();
 $totals = array();

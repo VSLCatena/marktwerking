@@ -1,5 +1,5 @@
 // Settings
-var updateTime = 30; // The update time in seconds
+var updateTime = 10 * 60; // The update time in seconds
 var timeOffset = 5; // the amount of seconds we update LATER to avoid update issues
 // End settings
 
