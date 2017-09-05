@@ -80,13 +80,12 @@
 						<div class="col-md-12">
 							<div class="btn-group btn-group-justified cat">
 								<a class="btn btn-primary btn-sq" ng-click="bar.itemFilter = ''">All</a>
-                                <a class="btn btn-primary btn-sq" ng-repeat="cat in bar.categories" ng-click="bar.itemFilter = cat.id">{{ cat.name }}</a>
+                                <a class="btn btn-primary btn-sq" ng-repeat="cat in bar.categories" ng-click="bar.itemFilter = cat.id" ng-if="cat.name !== ''">{{ cat.name }}</a>
 								<!-- using JS more cat buttons will be created-->
 							</div>
 						</div>
 					</div>
-                    <br>
-					<div  class="row">
+                    <div  class="row">
 						<div class="col-md-12">
                             <div class="products">
                                 <div class="btn btn-sq-prod"
@@ -182,15 +181,13 @@
 
                             <div id="drinks" class="tab-pane fade">
                                 <div class="row">
-                                    <div class="col-sm-1">ID</div>
                                     <div class="col-sm-3">Naam</div>
-                                    <div class="col-sm-1">Prijs</div>
-                                    <div class="col-sm-1">Minimum</div>
+                                    <div class="col-sm-2">Prijs</div>
+                                    <div class="col-sm-2">Minimum</div>
                                     <div class="col-sm-1">Actief</div>
                                     <div class="col-sm-2">Foto uploaden</div>
                                     <div class="col-sm-1">Link foto</div>
                                     <div class="col-sm-1">Verwijderen</div>
-                                    <div class="col-sm-1">&nbsp;</div>
                                 </div>
                                 <br>
                                 <hr>
@@ -199,10 +196,9 @@
 
                                 <form action="index.php" method="post" enctype="multipart/form-data">
                                     <div class="input-append row" ng-repeat="item in bar.items">
-                                        <div class="col-sm-1" >{{item.id}}</div>
                                         <input class="col-sm-3" type="text" ng-model="item.name">
-                                        <input type="text" class="settings-item-price col-sm-1" ng-model="item.start_price">
-                                        <input type="text" class="settings-item-price col-sm-1" ng-model="item.minimum_price">
+                                        <input type="text" class="settings-item-price col-sm-2" ng-model="item.start_price">
+                                        <input type="text" class="settings-item-price col-sm-2" ng-model="item.minimum_price">
                                         <label class="col-sm-1"><input type="checkbox" ng-model="item.active" >Actief</label>
                                         <input type="file" name="{{item.id}}" id="fileToUpload_{{item.id}}" class="btn col-sm-2"></input>
                                         <div class="col-sm-1">
