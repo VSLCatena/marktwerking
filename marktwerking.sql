@@ -87,7 +87,7 @@ CREATE TABLE `order_history` (
 --
 
 CREATE TABLE `settings` (
-  `key` varchar(32) NOT NULL,
+  `setting` varchar(32) NOT NULL,
   `value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -148,7 +148,7 @@ ALTER TABLE `orders`
 -- Indexes for table `settings`
 --
 ALTER TABLE `settings`
-  ADD PRIMARY KEY (`key`);
+  ADD PRIMARY KEY (`setting`);
 
 --
 -- AUTO_INCREMENT for dumped tables

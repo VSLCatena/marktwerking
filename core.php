@@ -1,4 +1,5 @@
 <?php
+require_once ('init.php');
 require_once('settings.php');
 try {
     $pdo = new PDO(DB_DRIVER . ':host=' . DB_HOST . ';dbname=' . DB_DATABASE . ';', DB_USERNAME, DB_PASSWORD);
