@@ -18,6 +18,9 @@ function load(){
             $("body").removeClass("loading");
             $(this).dequeue();
         });
+    }).fail(function() {
+        console.log( "Error loading new data!" );
+        load();
     });
 }
 

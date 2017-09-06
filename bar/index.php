@@ -1,4 +1,88 @@
 <?php include("./password_protect.php"); ?>
+<?php
+$message=null;
+#error_reporting(E_ALL);
+#ini_set('display_errors', 1);
+//create a new clean array
+$files = [];
+foreach ($_FILES as $key=>$value) {
+    if ($value['size']!=0 && $value['error']==0){
+        $n=count($files);
+        $files[$n]=$value;
+        $files[$n]['name']=$key . ".png";
+        $n+=1;
+    }
+}
+
+
+$target_dir = "../images/drinks/";
+foreach ($files as $key=>$value) {
+
+
+    $target_file = $target_dir . basename($files[$key]["name"]);
+    $uploadOk = 1;
+    $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+    // Check if image file is a actual image or fake image
+
+
+    if (isset($_POST["submit"])) {
+
+        $check = getimagesize($files[$key]["tmp_name"]);
+        if ($check !== false) {
+            /*echo "File is an image - " . $check["mime"] . ".";*/
+            $uploadOk = 1;
+        } else {
+            $message= "File is not an image.";
+            $uploadOk = 0;
+        }
+    }
+
+
+    // Check file size
+    $max_size = 300000;
+    if ($files[$key]["size"] > $max_size) {
+        $message= "Sorry, your file is too large. <br>" . $max_size / 1000 . "kb is allowed";
+        $uploadOk = 0;
+    }
+    // Allow certain file formats
+    if ($imageFileType != "png") {
+        $message= "Sorry, PNG files are allowed.";
+        $uploadOk = 0;
+    }
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        $message="<br>Sorry, your file was not uploaded.";
+        // if everything is ok, try to upload file
+    } else {
+        unlink("$target_file");
+        if (move_uploaded_file($files[$key]["tmp_name"], $target_file)) {
+            /*echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";*/
+
+            $im = new imagick($target_file);
+            $imageprops = $im->getImageGeometry();
+            $width = $imageprops['width'];
+            $height = $imageprops['height'];
+            if($width > $height){
+                $newHeight = 200;
+                $newWidth = (200 / $height) * $width;
+            }else{
+                $newWidth = 200;
+                $newHeight = (200 / $width) * $height;
+            }
+            $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
+            $im->cropImage (200,200,0,0);
+            $im->writeImage( $target_file );
+            /* echo '<img src=' . $target_file . '>';*/
+
+
+
+        } else {
+            $message= "<br>Sorry, there was an error uploading your file.";
+        }
+    }
+    /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
+}
+?>
 <!DOCTYPE html>
 <html lang="en" ng-app="barApp">
 	<head>
@@ -40,39 +124,42 @@
                     <div class="orderlist row">
                         <div class="col-xs-12">
                             <div class="row checkout-header">
-                                <div class="col-xs-5">Naam:</div>
-                                <div class="col-xs-2">Aantal</div>
-                                <div class="col-xs-3">Prijs</div>
+                                <div class="col-xs-12">Order:</div>
                             </div>
                             <hr>
                             <div class="checkout-content">
-                            <div class="row checkout-item" ng-repeat="item in bar.order">
-                                <div class="col-xs-5">{{ item.name }}</div>
-                                <div class="col-xs-2">{{ item.times }}</div>
-                                <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
-                                <div class="col-xs-3 ">
-                                    <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
-                                    <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
+                                <div class="row checkout-item" ng-repeat="item in bar.order">
+                                    <div class="col-xs-2">{{ item.times }}x</div>
+                                    <div class="col-xs-5">{{ item.name }}</div>
+                                    <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
+                                    <div class="col-xs-3 ">
+                                        <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
+                                        <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
+                            <hr />
                             <div class="row checkout-total">
                                 <!-- list of total drinks to be payed -->
-                                <div class="col-xs-offset-5 col-xs-2">{{ getTotalItems() }}</div>
-                                <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
-                                <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
+                                <div class="col-xs-7">{{ getTotalItems() }} items</div>
+                                <div class="col-xs-5 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
+                                <div class="col-xs-12 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 orderlist">
+                        <div class="col-xs-12 orderlist orderlist-prev">
                             <div class="row">
-                                <div class="col-xs-5">Vorige bestelling:</div>
-                                <div class="col-xs-2">{{bar.order_prev.amount}}</div>
-                                <div class="col-xs-5 checkout-total-price" >{{ bar.order_prev.total| currency:"&euro;" }}</div>
+                                <div class="col-xs-12">Vorige bestelling:</div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-xs-7">{{bar.order_prev.amount}} items</div>
+                                <div class="col-xs-5 checkout-previous-price">{{ bar.order_prev.total| currency:"&euro;" }}</div>
                             </div>
                         </div>
                     </div>
+
 				</div>
 
 				<div class="col-md-7">
@@ -92,8 +179,10 @@
                                      ng-repeat="item in bar.items | filter : item.active==True | matchCategory: bar.itemFilter | orderBy:'name'"
                                      ng-click="addToOrder(item)"
                                      ng-style="{'background-image': 'linear-gradient( rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7) ),url('+'../images/drinks/' + item.id+'.png' + ')'}">
-                                    {{ item.name }}
-                                    <div class="btn-sq-prod-price">{{item.price | currency:"€":0}}</div>
+                                    <div class="btn-content">
+                                        {{ item.name }}
+                                        <div class="btn-sq-prod-price">{{item.price | currency:"€":0}}</div>
+                                    </div>
                                 </div>
                                 <!-- using JS buttons will be created-->
                             </div>
@@ -260,107 +349,20 @@
                 </div>
             </div>
         </div>
+        <?php if($message != null): ?>
         <div class="footer">
-            <hr>
-            <div class="footer-message">
-                <div class="footer-message">
-                    <div class="footer-message-image">
-                        <!--FULL IMAGE UPLOAD-->
-                        <?php
-                        $message="";
-                        #error_reporting(E_ALL);
-                        #ini_set('display_errors', 1);
-                        //create a new clean array
-                        $files = [];
-                        foreach ($_FILES as $key=>$value) {
-                            if ($value['size']!=0 && $value['error']==0){
-                                $n=count($files);
-                                $files[$n]=$value;
-                                $files[$n]['name']=$key . ".png";
-                                $n+=1;
-                            }
-                        }
-
-
-                        $target_dir = "../images/drinks/";
-                        foreach ($files as $key=>$value) {
-
-
-                            $target_file = $target_dir . basename($files[$key]["name"]);
-                            $uploadOk = 1;
-                            $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-                            // Check if image file is a actual image or fake image
-
-
-                            if (isset($_POST["submit"])) {
-
-                                $check = getimagesize($files[$key]["tmp_name"]);
-                                if ($check !== false) {
-                                    /*echo "File is an image - " . $check["mime"] . ".";*/
-                                    $uploadOk = 1;
-                                } else {
-                                    $message= "File is not an image.";
-                                    $uploadOk = 0;
-                                }
-                            }
-
-
-                            // Check file size
-                            $max_size = 300000;
-                            if ($files[$key]["size"] > $max_size) {
-                                $message= "Sorry, your file is too large. <br>" . $max_size / 1000 . "kb is allowed";
-                                $uploadOk = 0;
-                            }
-                            // Allow certain file formats
-                            if ($imageFileType != "png") {
-                                $message= "Sorry, PNG files are allowed.";
-                                $uploadOk = 0;
-                            }
-                            // Check if $uploadOk is set to 0 by an error
-                            if ($uploadOk == 0) {
-                                $message="<br>Sorry, your file was not uploaded.";
-                                // if everything is ok, try to upload file
-                            } else {
-                                unlink("$target_file");
-                                if (move_uploaded_file($files[$key]["tmp_name"], $target_file)) {
-                                    /*echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";*/
-
-                                    $im = new imagick($target_file);
-                                    $imageprops = $im->getImageGeometry();
-                                    $width = $imageprops['width'];
-                                    $height = $imageprops['height'];
-                                    if($width > $height){
-                                        $newHeight = 200;
-                                        $newWidth = (200 / $height) * $width;
-                                    }else{
-                                        $newWidth = 200;
-                                        $newHeight = (200 / $width) * $height;
-                                    }
-                                    $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
-                                    $im->cropImage (200,200,0,0);
-                                    $im->writeImage( $target_file );
-                                    /* echo '<img src=' . $target_file . '>';*/
-
-
-
-                                } else {
-                                    $message= "<br>Sorry, there was an error uploading your file.";
-                                }
-                            }
-                            /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
-                        }
-                        echo($message);
-                        ?>
-                    </div>
-                </div>
+            <div class="footer-message-image">
+                <hr>
+                <?=$message; ?>
                 <hr>
             </div>
+        </div>
+        <?php endif; ?>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.js"></script>
-            <script src="../js/bar.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.js"></script>
+        <script src="../js/bar.js"></script>
 
 
 
