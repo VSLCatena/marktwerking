@@ -68,6 +68,8 @@ angular.module('barApp', [])
 
         $scope.submitOrder = function() {
             console.log(marktwerking.order);
+            if(marktwerking.order.length <= 0)
+                return;
 
             //to be shown under the submit button for reference
             marktwerking.order_prev.amount=0;
@@ -187,7 +189,7 @@ angular.module('barApp', [])
 
         $scope.settingsItemAdd = function() {
             var len = marktwerking.items.length;
-            marktwerking.items.push({name:"",start_price:0,minimum_price:0,active:false});
+            marktwerking.items.push({name:"",start_price:0,minimum_price:0,active:true});
             console.log(marktwerking.items);
         };
 
