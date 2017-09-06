@@ -28,7 +28,6 @@
 
 .checkout-total {
     align-self: flex-end;
-    border-top: 1px solid black;
 }
 
 .checkout-total-price{
@@ -36,9 +35,25 @@
     font-weight: bold;
 }
 
+.checkout-previous-price {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+hr {
+    margin-top: 5px;
+    border-top: 1px solid #aaa;
+}
+
+.orderlist-prev hr {
+    margin-bottom: 5px;
+}
+
 .checkout-item-mod {
     width: 40%;
     margin: 2%;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .checkout-order-pay{
@@ -46,9 +61,15 @@
     margin-top:25px;
 }
 
-.orderlist{
+.orderlist {
     box-shadow:1px 1px 1px 1px;
-    }
+}
+
+.orderlist-prev {
+    margin-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 
 
 .category{

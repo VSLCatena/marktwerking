@@ -40,39 +40,42 @@
                     <div class="orderlist row">
                         <div class="col-xs-12">
                             <div class="row checkout-header">
-                                <div class="col-xs-5">Naam:</div>
-                                <div class="col-xs-2">Aantal</div>
-                                <div class="col-xs-3">Prijs</div>
+                                <div class="col-xs-12">Order:</div>
                             </div>
                             <hr>
                             <div class="checkout-content">
-                            <div class="row checkout-item" ng-repeat="item in bar.order">
-                                <div class="col-xs-5">{{ item.name }}</div>
-                                <div class="col-xs-2">{{ item.times }}</div>
-                                <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
-                                <div class="col-xs-3 ">
-                                    <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
-                                    <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
+                                <div class="row checkout-item" ng-repeat="item in bar.order">
+                                    <div class="col-xs-2">{{ item.times }}x</div>
+                                    <div class="col-xs-5">{{ item.name }}</div>
+                                    <div class="col-xs-2">{{ (item.times * item.price) | currency:"&euro;" }}</div>
+                                    <div class="col-xs-3 ">
+                                        <div class="btn btn-warning checkout-item-mod" ng-click="subtractFromOrder(item)">-</div>
+                                        <div class="btn btn-danger checkout-item-mod" ng-click="deleteFromOrder(item)">X</div>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
+                            <hr />
                             <div class="row checkout-total">
                                 <!-- list of total drinks to be payed -->
-                                <div class="col-xs-offset-5 col-xs-2">{{ getTotalItems() }}</div>
-                                <div class="col-xs-3 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
-                                <div class="col-xs-1 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
+                                <div class="col-xs-7">{{ getTotalItems() }} items</div>
+                                <div class="col-xs-5 checkout-total-price" >{{ getTotalPrice() | currency:"&euro;" }}</div>
+                                <div class="col-xs-12 btn btn-success btn-group-justified checkout-order-pay" ng-click="submitOrder()">Betalen</div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 orderlist">
+                        <div class="col-xs-12 orderlist orderlist-prev">
                             <div class="row">
-                                <div class="col-xs-5">Vorige bestelling:</div>
-                                <div class="col-xs-2">{{bar.order_prev.amount}}</div>
-                                <div class="col-xs-5 checkout-total-price" >{{ bar.order_prev.total| currency:"&euro;" }}</div>
+                                <div class="col-xs-12">Vorige bestelling:</div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-xs-7">{{bar.order_prev.amount}} items</div>
+                                <div class="col-xs-5 checkout-previous-price">{{ bar.order_prev.total| currency:"&euro;" }}</div>
                             </div>
                         </div>
                     </div>
+
 				</div>
 
 				<div class="col-md-7">
