@@ -95,8 +95,10 @@
                                      ng-repeat="item in bar.items | filter : item.active==True | matchCategory: bar.itemFilter | orderBy:'name'"
                                      ng-click="addToOrder(item)"
                                      ng-style="{'background-image': 'linear-gradient( rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7) ),url('+'../images/drinks/' + item.id+'.png' + ')'}">
-                                    {{ item.name }}
-                                    <div class="btn-sq-prod-price">{{item.price | currency:"€":0}}</div>
+                                    <div class="btn-content">
+                                        {{ item.name }}
+                                        <div class="btn-sq-prod-price">{{item.price | currency:"€":0}}</div>
+                                    </div>
                                 </div>
                                 <!-- using JS buttons will be created-->
                             </div>
