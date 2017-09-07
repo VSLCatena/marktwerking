@@ -7,7 +7,7 @@ body {
 }
 
 .prices-background {
-    background-image: url('../images/bg_rtl875.jpg');
+    background-image: url('../images/background.png');
     background-size: cover;
     background-position: center;
     height: 50vh;
