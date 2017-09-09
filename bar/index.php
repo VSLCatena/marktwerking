@@ -270,9 +270,10 @@ foreach ($files as $key=>$value) {
 
                             <div id="drinks" class="tab-pane fade">
                                 <div class="row">
-                                    <div class="col-sm-3">Naam</div>
+                                    <div class="col-sm-2">Naam</div>
                                     <div class="col-sm-2">Prijs</div>
                                     <div class="col-sm-2">Minimum</div>
+									<div class="col-sm-1">Volume</div>
                                     <div class="col-sm-1">Actief</div>
                                     <div class="col-sm-2">Foto uploaden</div>
                                     <div class="col-sm-1">Link foto</div>
@@ -285,9 +286,10 @@ foreach ($files as $key=>$value) {
 
                                 <form action="index.php" method="post" enctype="multipart/form-data">
                                     <div class="input-append row" ng-repeat="item in bar.items">
-                                        <input class="col-sm-3" type="text" ng-model="item.name">
+                                        <input class="col-sm-2" type="text" ng-model="item.name">
                                         <input type="text" class="settings-item-price col-sm-2" ng-model="item.start_price">
                                         <input type="text" class="settings-item-price col-sm-2" ng-model="item.minimum_price">
+										<input type="text" class="settings-item-volume col-sm-1" ng-model="item.volume">
                                         <label class="col-sm-1"><input type="checkbox" ng-model="item.active" >Actief</label>
                                         <input type="file" name="{{item.id}}" id="fileToUpload_{{item.id}}" class="btn col-sm-2"></input>
                                         <div class="col-sm-1">

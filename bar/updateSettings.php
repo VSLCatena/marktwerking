@@ -62,21 +62,34 @@ if (!empty($data)) {
 		}
 		foreach ($data['items'] as $key => $value) {
 			if ($value['active']=='true') {$value['active']="1";} else {$value['active']="0";}
-			$stmt = $pdo->prepare("
-				INSERT INTO `drinks` (id,name,start_price,minimum_price,active)
+			if ($value['id']=='') {
+				$stmt = $pdo->prepare("
+				INSERT INTO `drinks` (name,start_price,minimum_price,volume,active)
 				VALUES (?,?,?,?,?) 
-				ON DUPLICATE KEY 
-				UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`), `start_price` = VALUES(`start_price`), `minimum_price` = VALUES(`minimum_price`), `active` = VALUES(`active`);"
-			);
-			$stmt->execute(
+			");
+				$stmt->execute(
 				array(
-					$value['id'],
 					$value['name'],
 					$value['start_price'],
 					$value['minimum_price'],
+					$value['volume'],
 					$value['active']
 				)
-			);
+			);}
+			
+			if ($value['id']!='') {	
+				
+				$stmt = $pdo->prepare("UPDATE `drinks` SET `name` = ?, `start_price` = ?, `minimum_price` = ?, `volume` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
+				$stmt->execute(
+				array(
+					$value['name'],
+					$value['start_price'],
+					$value['minimum_price'],
+					$value['volume'],
+					$value['active'],
+					$value['id']
+				)
+			);}
 		}
 	}
 

@@ -44,7 +44,8 @@ angular.module('barApp', [])
                 id: item.id,
                 name: item.name,
                 price: item.price,
-                times: 1
+                times: 1,
+				volume: item.volume
             });
         };
 
@@ -183,20 +184,22 @@ angular.module('barApp', [])
         };
 
         $scope.settingsItemRemove = function(index) {
-            marktwerking.items.splice(index, 1);
-
+            if (confirm("Artikel verwijderen?")) {
+                marktwerking.items.splice(index, 1);
+            }
         };
 
         $scope.settingsItemAdd = function() {
             var len = marktwerking.items.length;
-            marktwerking.items.push({name:"",start_price:0,minimum_price:0,active:true});
+            marktwerking.items.push({id:"", name:"",start_price:0,minimum_price:0,active:true});
             console.log(marktwerking.items);
         };
 
 
         $scope.settingsCategoryRemove = function(index) {
-            marktwerking.categories.splice(index, 1);
-
+            if (confirm("Categorie verwijderen?")) {
+                marktwerking.categories.splice(index, 1);
+            }
         };
 
         $scope.settingsCategoryAdd = function() {
