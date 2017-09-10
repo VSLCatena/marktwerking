@@ -104,6 +104,7 @@ angular.module('barApp', [])
                 console.debug(response.data);
                 marktwerking.categories = response.data.categories;
                 marktwerking.items = response.data.drinks;
+                marktwerking.stock = response.data.stock;
                 for(var key in marktwerking.items){
                     if (marktwerking.items[key].active==="1"){marktwerking.items[key].active=true;}
                     else {marktwerking.items[key].active=false;}};
@@ -233,6 +234,14 @@ angular.module('barApp', [])
                 location.reload(true)
             }
         };
+
+        $scope.settingsShowStock = function() {
+            $(".settings-stock-volume").toggle();
+            $(".settings-stock-itempackage").toggle();
+
+
+
+        }
 
         marktwerking.updateSQL = function(){
             sendData={categories: marktwerking.categories, items: marktwerking.items, settings :marktwerking.settings };

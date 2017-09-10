@@ -132,7 +132,7 @@ hr {
 
 
 .modal-xlg {
-    width:75%;
+    width:85%;
 }
 
 
@@ -149,3 +149,6 @@ input[type=file] {
     width:35px;
     border:1px solid rgba(8, 8, 8, 0.09);
 }
+
+.settings-stock-volume{display:none;}
+.settings-stock-itempackage{display:none;}

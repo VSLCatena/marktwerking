@@ -51,47 +51,71 @@ if (!empty($data)) {
 				);
 			};
 	}
-	if ($data['items']){
-		$array_del_id = array_column($data['items'], 'id'); //extract ids from items
-		$array_len = count($array_del_id); //count amount of item id's
-		if ($array_len != 0){
-			$varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
-			$sql = "DELETE FROM drinks WHERE id NOT IN (" . $varprep . ");"; //create sql
-			$stmt = $pdo->prepare($sql);
-			$stmt->execute($array_del_id);
-		}
-		foreach ($data['items'] as $key => $value) {
-			if ($value['active']=='true') {$value['active']="1";} else {$value['active']="0";}
-			if ($value['id']=='') {
-				$stmt = $pdo->prepare("
+	if ($data['items']) {
+        $array_del_id = array_column($data['items'], 'id'); //extract ids from items
+        $array_len = count($array_del_id); //count amount of item id's
+        if ($array_len != 0) {
+            $varprep = rtrim(str_repeat("?,", $array_len), ','); //create list of ?,? and remove last comma
+            $sql = "DELETE FROM drinks WHERE id NOT IN (" . $varprep . ");"; //create sql
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($array_del_id);
+        }
+        foreach ($data['items'] as $key => $value) {
+            if ($value['active'] == 'true') {
+                $value['active'] = "1";
+            } else {
+                $value['active'] = "0";
+            }
+            if ($value['id'] == '') {
+                $stmt = $pdo->prepare("
 				INSERT INTO `drinks` (name,start_price,minimum_price,volume,active)
 				VALUES (?,?,?,?,?) 
 			");
-				$stmt->execute(
-				array(
-					$value['name'],
-					$value['start_price'],
-					$value['minimum_price'],
-					$value['volume'],
-					$value['active']
-				)
-			);}
-			
-			if ($value['id']!='') {	
-				
-				$stmt = $pdo->prepare("UPDATE `drinks` SET `name` = ?, `start_price` = ?, `minimum_price` = ?, `volume` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
-				$stmt->execute(
-				array(
-					$value['name'],
-					$value['start_price'],
-					$value['minimum_price'],
-					$value['volume'],
-					$value['active'],
-					$value['id']
-				)
-			);}
-		}
-	}
+                $stmt->execute(
+                    array(
+                        $value['name'],
+                        $value['start_price'],
+                        $value['minimum_price'],
+                        $value['volume'],
+                        $value['active']
+                    )
+                );
+            }
+
+            if ($value['id'] != '') {
+
+                $stmt = $pdo->prepare("UPDATE `drinks` SET `name` = ?, `start_price` = ?, `minimum_price` = ?, `volume` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
+                $stmt->execute(
+                    array(
+                        $value['name'],
+                        $value['start_price'],
+                        $value['minimum_price'],
+                        $value['volume'],
+                        $value['active'],
+                        $value['id']
+                    )
+                );
+            }
+        }
+
+        foreach ($data['items'] as $key => $value) {
+
+            $stmt = $pdo->prepare("
+            INSERT INTO `stock` (drink_id,item_package,volume,package,item)
+            VALUES (?,?,?,?,?) 
+            ");
+            $stmt->execute(
+                array(
+                    $value['id'],
+                    $value['stock'][0]['item_package'],
+                    $value['stock'][0]['volume'],
+                    $value['stock'][0]['package'],
+                    $value['stock'][0]['item']
+                )
+            );
+        };
+
+    }
 
 
     /*

@@ -32,6 +32,21 @@ foreach($drinks as &$drink){
 }
 $data['drinks'] = $drinks;
 
+// fetch all stock data
+$query = $pdo->query("SELECT * FROM `stock` ORDER BY `date` DESC");
+// Save it to a separate array to easily link categories to it
+foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+    $stock[$row['drink_id']][] = $row;
+}
+
+//link stock data
+foreach($drinks as &$drink) {
+    if (!array_key_exists($drink['id'], $stock)) {
+        $drink['stock'] = array();
+        continue;
+    }
+    $drink['stock'] = $stock[$drink['id']];
+}
 
 // fetch all settings
 $query = $pdo->query("SELECT * FROM settings");

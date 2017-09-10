@@ -279,7 +279,6 @@ foreach ($files as $key=>$value) {
                                     <div class="col-sm-1">Link foto</div>
                                     <div class="col-sm-1">Verwijderen</div>
                                 </div>
-                                <br>
                                 <hr>
 
 
@@ -337,7 +336,34 @@ foreach ($files as $key=>$value) {
                             </div>
                             <div id="stock" class="tab-pane fade">
 
-                            <p>hier komt ooit de voorraadinformatie</p>
+                                <div class="row">
+                                    <div class="col-xs-2">Datum</div>
+                                    <div class="col-xs-2">Naam</div>
+                                    <div class="col-xs-2 settings-stock-volume" >volume</div>
+                                    <div class="col-xs-2 settings-stock-itempackage" >Items per colli</div>
+                                    <div class="col-xs-1">Colli</div>
+                                    <div class="col-xs-1">Items los</div>
+                                    <input type="button" class="settings-stock-btn col-xs-2 " ng-click="settingsShowStock()" value="Volume/item & item/colli">
+
+                                </div>
+                                <hr>
+
+
+
+
+                                <div class="input-append row" ng-repeat="item in bar.items">
+                                    <input type="text" class="settings-stock-date col-xs-2" disabled="true" ng-model="item.stock[0].date">
+                                    <input type="text" class="settings-stock-name col-xs-2" disabled="true" ng-model="item.name">
+                                    <input type="text" class="settings-stock-volume col-xs-2" ng-model="item.stock[0].volume">
+                                    <input type="text" class="settings-stock-itempackage col-xs-2  " ng-model="item.stock[0].item_package">
+                                    <input type="text" class="settings-stock-package col-xs-1"  ng-model="item.stock[0].package">
+                                    <input type="text" class="settings-stock-item col-xs-1" ng-model="item.stock[0].item">
+
+                                </div>
+
+
+
+
                             </div>
 
                         </div>
