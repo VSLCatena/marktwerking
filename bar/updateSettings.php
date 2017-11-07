@@ -24,6 +24,11 @@ if (!empty($data)) {
         $stmt = $pdo->prepare("UPDATE `settings` SET `value` =? WHERE `settings`.`setting` = ?;");
         $stmt->execute(array($value,$key));
     }
+//    if ($data['settings']['mode_change']==1) {
+//        //2017-09-11 17:12:38 Y-m-d H:i:s
+//        $stmt = $pdo->prepare("UPDATE `settings` SET `value` =? WHERE `settings`.`setting` = ?;");
+//        $stmt->execute(array(date("Y-m-d H:i:s"), 'mode_timestamp'));
+//    }
 
     //categories delete, update/insert
 	if ($data['categories']){
