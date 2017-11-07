@@ -89,11 +89,11 @@ angular.module('barApp', [])
                 './submitOrder.php',
                 $.param(sendData),
                 { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }}
-            ).success(function(response) {
+            ).then(function successCallback(response) {
                 // sueccs
                 marktwerking.orderInfo = response;
                 marktwerking.orderInfo.diff=marktwerking.settings.limit-marktwerking.orderInfo.total;
-            }).error(function(response) {
+            },function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });
@@ -118,7 +118,6 @@ angular.module('barApp', [])
                     else {marktwerking.items[key].active=false;}};
                 marktwerking.settings = response.data.settings;
                 marktwerking.orderInfo.diff=marktwerking.settings.limit-marktwerking.orderInfo.total;
-                console.debug(marktwerking.settings);
 
 
 
@@ -228,7 +227,7 @@ vervang dit door nieuwe order schema
 
         $scope.settingsItemAdd = function() {
             var len = marktwerking.items.length;
-            marktwerking.items.push({id:"", name:"",start_price:0,minimum_price:0,active:true});
+            marktwerking.items.push({id:"", name:"",start_price:0,minimum_price:0,active:false});
             console.log(marktwerking.items);
         };
 
@@ -264,10 +263,10 @@ vervang dit door nieuwe order schema
                     './resetMarktwerking.php',
                     $.param(sendData),
                     {headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
-                ).then(function (response) {
+                ).then(function successCallback(response) {
                     marktwerking.order = []
 
-                }).catch(function (response) {
+                },function errorCallback(response) {
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
@@ -323,29 +322,27 @@ vervang dit door nieuwe order schema
 
         marktwerking.updateSQL = function(){
             sendData={categories: marktwerking.categories, items: marktwerking.items, settings :marktwerking.settings };
-
+            console.log(sendData);
             $http.post(
                 './updateSettings.php',
                 $.param(sendData),
                 { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }}
-            ).then(function(response) {
-				console.log("succes");
+            ).then(function successCallback(response) {
                 //get prices (due to possible modus change)
                 marktwerking.update();
 
 
-            }).catch(function(response) {
+            },function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });
         };
 
-        $("#settings").on("hide.bs.modal", function () {
+        $scope.submitSettings = function () {
             // put your default event here
             marktwerking.updateSQL();
-            //uncomment dit hieronder nadat hij af is.
             //location.reload(true)
-        });
+        };
 
     });
 

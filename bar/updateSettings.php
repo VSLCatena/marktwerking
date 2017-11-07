@@ -8,7 +8,6 @@ require_once('../core.php');
 //var_dump($_POST);
 //echo '</pre>';
 
-$data=$_POST;
 
 //$stmt = $pdo->prepare('UPDATE categories SET name=? WHERE id=?');
 //$stmt->execute($namehere, $idhere));
@@ -18,21 +17,21 @@ $data=$_POST;
 
 
 // SQL Injections are no bueno
-if (!empty($data)) {
+if (!empty($_POST)) {
 
-    foreach ($data['settings'] as $key => $value) {
+    foreach ($_POST['settings'] as $key => $value) {
         $stmt = $pdo->prepare("UPDATE `settings` SET `value` =? WHERE `settings`.`setting` = ?;");
         $stmt->execute(array($value,$key));
     }
-//    if ($data['settings']['mode_change']==1) {
+//    if ($_POST['settings']['mode_change']==1) {
 //        //2017-09-11 17:12:38 Y-m-d H:i:s
 //        $stmt = $pdo->prepare("UPDATE `settings` SET `value` =? WHERE `settings`.`setting` = ?;");
 //        $stmt->execute(array(date("Y-m-d H:i:s"), 'mode_timestamp'));
 //    }
 
     //categories delete, update/insert
-	if ($data['categories']){
-			$array_del_id = array_column($data['categories'], 'id'); //extract ids from categories
+	if ($_POST['categories']){
+			$array_del_id = array_column($_POST['categories'], 'id'); //extract ids from categories
 			$array_len = count($array_del_id); //count amount of cat id's
 			if ($array_len != 0){
 				$varprep = rtrim(str_repeat("?,",$array_len),','); //create list of ?,? and remove last comma
@@ -40,7 +39,7 @@ if (!empty($data)) {
 				$stmt = $pdo->prepare($sql);
 				$stmt->execute($array_del_id);
 			}
-			foreach ($data['categories'] as $key => $value) {
+			foreach ($_POST['categories'] as $key => $value) {
 
 				$stmt = $pdo->prepare("
 					INSERT INTO `categories` (`id`,`name`)
@@ -56,8 +55,8 @@ if (!empty($data)) {
 				);
 			};
 	}
-	if ($data['items']) {
-        $array_del_id = array_column($data['items'], 'id'); //extract ids from items
+	if ($_POST['items']) {
+        $array_del_id = array_column($_POST['items'], 'id'); //extract ids from items
         $array_len = count($array_del_id); //count amount of item id's
         if ($array_len != 0) {
             $varprep = rtrim(str_repeat("?,", $array_len), ','); //create list of ?,? and remove last comma
@@ -65,7 +64,7 @@ if (!empty($data)) {
             $stmt = $pdo->prepare($sql);
             $stmt->execute($array_del_id);
         }
-        foreach ($data['items'] as $key => $value) {
+        foreach ($_POST['items'] as $key => $value) {
             if ($value['active'] == 'true') {
                 $value['active'] = "1";
             } else {
@@ -103,7 +102,7 @@ if (!empty($data)) {
             }
         }
 
-        foreach ($data['items'] as $key => $value) {
+        foreach ($_POST['items'] as $key => $value) {
 
             $stmt = $pdo->prepare("
             INSERT INTO `stock` (drink_id,item_package,volume,package,item)
@@ -125,7 +124,7 @@ if (!empty($data)) {
 
     /*
         //needs insert
-        foreach ($data['items'] as $key => $value) {
+        foreach ($_POST['items'] as $key => $value) {
             if ($value['active']==true) {$value['active']="1";} else {$value['active']="0";}
             //$stmt = $pdo->prepare("UPDATE `drinks` SET `name` = ?, `start_price` = ?, `minimum_price` = ?, `active` = ? WHERE `drinks`.`id` = ?;");
 
@@ -149,7 +148,7 @@ if (!empty($data)) {
     //first clear table of drinks&category
     $stmt = $pdo->prepare("TRUNCATE TABLE `drink_category`;");
     $stmt->execute();
-    foreach ($data['items'] as $key => $value) {
+    foreach ($_POST['items'] as $key => $value) {
         if ($value['categories']){
             foreach ($value['categories'] as $key2 => $value2) {
                 $stmt = $pdo->prepare("INSERT INTO `drink_category` (`drink_id`, `category_id`) VALUES (?, ?);");

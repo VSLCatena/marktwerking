@@ -109,6 +109,7 @@ foreach ($files as $key=>$value) {
             </div>
             <div id="navbar" class="navbar-right navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
+                    <li ><a class="btn btn-danger" href="#" type="button" ng-click="submitSettings()">Opslaan</a></li>
                     <li><a href="./index.php" type="button">Frontoffice</a></li>
                     <li><a href="./index.php?logout">Uitloggen</a></li>
                 </ul>
@@ -124,25 +125,27 @@ foreach ($files as $key=>$value) {
     </div>
     <div class="container-fluid">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#general">Algemeen</a>
-            </li>
-            <li><a data-toggle="tab" href="#drinks">Artikelen</a>
-            </li>
-            <li><a data-toggle="tab" href="#category">Categorieen</a>
-            </li>
-            <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a>
-            </li>
-            <li><a data-toggle="tab" href="#stock">Voorraad</a>
-            </li>
-            <li><a data-toggle="tab" href="#marktwerking">Marktwerking</a>
-            </li>
+            <li class="active"><a data-toggle="tab" href="#general">Algemeen</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Artikelen
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="tab" href="#drinks">Artikelen</a></li>
+                    <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
+                </ul>
+            <li><a data-toggle="tab" href="#category">Categorieen</a></li>
+            <li><a data-toggle="tab" href="#stock">Voorraad</a></li>
+            <li><a data-toggle="tab" href="#marktwerking">Marktwerking</a></li>
+
         </ul>
+        <br>
 
 
-        <div class="">
+
             <div class="tab-content">
-                <div id="general" class="tab-pane fade in active">
 
+                <div id="general" class="tab-pane fade in active">
+                    <div class="container-fluid">
                     <div class="radio">
                         <!--Bar=0, Marktwerking=1, Streeplijst=2 -->
                         <label>
@@ -157,10 +160,11 @@ foreach ($files as $key=>$value) {
                             <input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="2">Streeplijst tot maximaal:</label>
                         <input class="" type="text" ng-model="bar.settings.limit">
                     </div>
+
                 </div>
-
+                </div>
                 <div id="marktwerking" class="tab-pane fade">
-
+                    <div class="container-fluid">
                     <form>
                         <div class="input-group">
                             <span class="input-group-addon">Tijd ronde (min):</span>
@@ -179,9 +183,11 @@ foreach ($files as $key=>$value) {
                         <button class="btn btn-danger" ng-click="settingsMarktwerkingReset()">Reset Marktwerking</button>
 
                     </form>
+                    </div>
                 </div>
 
                 <div id="drinks" class="tab-pane fade">
+                    <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-2">Naam</div>
                         <div class="col-sm-2">Prijs</div>
@@ -192,6 +198,7 @@ foreach ($files as $key=>$value) {
                         <div class="col-sm-1">Link foto</div>
                         <div class="col-sm-1">Verwijderen</div>
                     </div>
+
                     <hr>
 
 
@@ -215,10 +222,12 @@ foreach ($files as $key=>$value) {
                         <button class="btn btn-small" type="button" ng-click="settingsItemAdd(item.name,item.price,item.price_min,item.category,item.active )">Nieuwe rij toevoegen</button>
                         <input class="btn btn-small btn-info" type="submit" value="Foto's uploaden" name="submit">
                     </form>
+                    </div>
                 </div>
 
 
                 <div id="drinks-mix" class="tab-pane fade">
+                    <div class="container-fluid">
                     <!--                                <div class="row">-->
                     <!--                                    <div class="input-append col-md-3" ng-repeat="item_mix in bar.items" ng-if="item_mix.mix!=false">-->
                     <!--                                        <div class="h4" >{{item_mix.name}}</div>-->
@@ -228,9 +237,10 @@ foreach ($files as $key=>$value) {
                     <!---->
                     <!--                                    </div>-->
                     <!--                                </div>-->
-                </div>
+                    </div></div>
 
                 <div id="category" class="tab-pane fade">
+                    <div class="container-fluid">
                     <button class="btn btn-small" type="button" ng-click="settingsCategoryAdd()">Nieuwe Categorie</button>
                     <div class="row">
                         <div class="col-sm-2" ng-repeat="category in bar.categories">
@@ -249,7 +259,9 @@ foreach ($files as $key=>$value) {
                         </div>
                     </div>
                 </div>
+                </div>
                 <div id="stock" class="tab-pane fade">
+                    <div class="container-fluid">
 
                     <div class="row">
                         <div class="col-xs-2">Datum</div>
@@ -275,14 +287,14 @@ foreach ($files as $key=>$value) {
                         <input type="text" class="settings-stock-item col-xs-1" ng-model="item.stock[0].item">
 
                     </div>
-
+                    </div>
 
 
 
                 </div>
 
             </div>
-        </div>
+
 
 
 
