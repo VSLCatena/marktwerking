@@ -1,0 +1,91 @@
+#PINcode {
+    min-height: 600px;
+
+}
+
+#PINform input:focus,
+#PINform select:focus,
+#PINform textarea:focus,
+#PINform button:focus {
+    outline: none;
+}
+#form {
+    background: #ededed;
+    padding: 30px;
+    margin-top: 10px;
+    margin-right: auto;
+    margin-bottom: 10px;
+    margin-left: auto;
+    max-width: 820px;
+    -webkit-box-shadow: 0px 5px 5px -0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 5px 5px -0px rgba(0,0,0,0.3);
+    box-shadow: 0px 5px 5px -0px rgba(0,0,0,0.3);
+}
+#PINbox {
+    background: #ededed;
+    margin: 3.5%;
+    width: 92%;
+    font-size: 3em;
+    text-align: center;
+    border: 1px solid #d5d5d5;
+
+
+}
+
+
+
+
+
+#BUTTONbox {
+    margin: 5px 10% 5px 10%;
+    min-height: 300px;
+    text-align: center;
+
+}
+
+
+.PINbutton {
+    background: #ededed;
+    color: #7e7e7e;
+    border: none;
+    /*background: linear-gradient(to bottom, #fafafa, #eaeaea);
+      -webkit-box-shadow: 0px 2px 2px -0px rgba(0,0,0,0.3);
+         -moz-box-shadow: 0px 2px 2px -0px rgba(0,0,0,0.3);
+              box-shadow: 0px 2px 2px -0px rgba(0,0,0,0.3);*/
+    border-radius: 50%;
+    font-size: 1.5em;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    margin: 16px 16px;
+    padding: 0;
+}
+.clear, .enter {
+    font-size: 1em;
+}
+.PINbutton:hover {
+    box-shadow: #506CE8 0 0 1px 1px;
+}
+.PINbutton:active {
+    background: #506CE8;
+    color: #fff;
+}
+.clear:hover {
+    box-shadow: #ff3c41 0 0 1px 1px;
+}
+.clear:active {
+    background: #ff3c41;
+    color: #fff;
+}
+.enter:hover {
+    box-shadow: #47cf73 0 0 1px 1px;
+}
+.enter:active {
+    background: #47cf73;
+    color: #fff;
+}
+.shadow{
+    -webkit-box-shadow: 0px 5px 5px -0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 5px 5px -0px rgba(0,0,0,0.3);
+    box-shadow: 0px 5px 5px -0px rgba(0,0,0,0.3);
+}
