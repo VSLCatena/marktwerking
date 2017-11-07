@@ -21,6 +21,7 @@ angular.module('barApp', [])
         marktwerking.items = [];
         marktwerking.order = [];
         marktwerking.order_prev =[];
+        marktwerking.orderInfo = [];
         marktwerking.settings = [];
         marktwerking.round = 0;
         marktwerking.interval;
@@ -29,7 +30,9 @@ angular.module('barApp', [])
         marktwerking.timeOffset = 5;
 
         marktwerking.itemFilter = '';
-
+/* 
+##	ORDER
+*/
         $scope.addToOrder = function(item) {
             var found = false;
             marktwerking.order.forEach(function(el){
@@ -88,7 +91,8 @@ angular.module('barApp', [])
                 { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }}
             ).success(function(response) {
                 // sueccs
-
+                marktwerking.orderInfo = response;
+                marktwerking.orderInfo.diff=marktwerking.settings.limit-marktwerking.orderInfo.total;
             }).error(function(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
@@ -96,6 +100,9 @@ angular.module('barApp', [])
             marktwerking.order = []
         };
 
+/* 
+##	Initialize
+*/		
         marktwerking.setup = function(){
             $http({
                 method: 'GET',
@@ -104,12 +111,18 @@ angular.module('barApp', [])
                 console.debug(response.data);
                 marktwerking.categories = response.data.categories;
                 marktwerking.items = response.data.drinks;
-                marktwerking.stock = response.data.stock;
+                marktwerking.orderInfo = response.data.orderInfo;
+				//orders moeten ook ingeladen worden
                 for(var key in marktwerking.items){
                     if (marktwerking.items[key].active==="1"){marktwerking.items[key].active=true;}
                     else {marktwerking.items[key].active=false;}};
                 marktwerking.settings = response.data.settings;
+                marktwerking.orderInfo.diff=marktwerking.settings.limit-marktwerking.orderInfo.total;
                 console.debug(marktwerking.settings);
+
+
+
+				
             }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
@@ -121,7 +134,7 @@ angular.module('barApp', [])
         marktwerking.update = function() {
             $http({
                 method: 'GET',
-                url: '../prices.php'
+                url: '../prices.php?mode='+marktwerking.settings.mode
             }).then(function successCallback(response) {
                 console.debug(response.data);
                 // Loop over all items and associate each current price to the correct item
@@ -139,6 +152,10 @@ angular.module('barApp', [])
             });
         };
 
+/* 
+##	TIME
+*/
+		
         marktwerking.pad = function(n, width, z) {
             z = z || '0';
             n = n + '';
@@ -160,14 +177,29 @@ angular.module('barApp', [])
             var secondsLeft = ((marktwerking.timeToUpdate - new Date().getTime()) / 1000) % marktwerking.updateTime;
             var minutes = parseInt(secondsLeft / 60);
             var seconds = Math.floor(secondsLeft % 60);
-            $("#timer").html(marktwerking.pad(minutes, 2) + " min. " + marktwerking.pad(seconds, 2) + " sec.");
+            $("#timer").html("Mode: Marktwerking | "+marktwerking.pad(minutes, 2) + " min. " + marktwerking.pad(seconds, 2) + " sec.");
 
         };
 
+
+
         marktwerking.interval = $interval(marktwerking.tick, 1000);
 
+        marktwerking.time = function() {
+            setInterval(function() {
+                var now = new Date(Date.now());
+                var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+                // 20:10:58
+                $('#time').text("Mode: Bar | "+formatted);
+            }, 1000);
+        }
+        marktwerking.time();
 
-
+/* 
+##	Get total set of orders
+vervang dit door nieuwe order schema
+*/
+		
         $scope.getTotalPrice = function(){
             var total = 0;
             marktwerking.order.forEach(function(el){
@@ -184,6 +216,10 @@ angular.module('barApp', [])
             return total;
         };
 
+		
+/* 
+##	Settings/ITEM
+*/		
         $scope.settingsItemRemove = function(index) {
             if (confirm("Artikel verwijderen?")) {
                 marktwerking.items.splice(index, 1);
@@ -196,6 +232,9 @@ angular.module('barApp', [])
             console.log(marktwerking.items);
         };
 
+/* 
+##	Settings/Categories
+*/		
 
         $scope.settingsCategoryRemove = function(index) {
             if (confirm("Categorie verwijderen?")) {
@@ -214,7 +253,9 @@ angular.module('barApp', [])
                 item.categories.push($(this).val());
             });
         };
-
+/* 
+##	Settings/Marktwerking
+*/
         $scope.settingsMarktwerkingReset = function() {
 
             if (confirm("Reset Marktwerking?")) {
@@ -223,10 +264,10 @@ angular.module('barApp', [])
                     './resetMarktwerking.php',
                     $.param(sendData),
                     {headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'}}
-                ).success(function (response) {
+                ).then(function (response) {
                     marktwerking.order = []
 
-                }).error(function (response) {
+                }).catch(function (response) {
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
@@ -235,13 +276,50 @@ angular.module('barApp', [])
             }
         };
 
+/* 
+##	Settings/Stock
+*/		
         $scope.settingsShowStock = function() {
             $(".settings-stock-volume").toggle();
             $(".settings-stock-itempackage").toggle();
-
-
-
         }
+
+
+        $scope.$watch('bar.settings.mode', function(newValue, oldValue) {
+            //newValue: undefined, 1, ..
+            //oldValue: undefined, undefined, ..
+
+/* 
+##	Settings/General
+*/
+			
+            if ( newValue !== oldValue ) {
+                if (marktwerking.settings.mode === '0') {
+                    $(".navbar-marktwerking").hide();
+                    $(".navbar-streeplijst").hide();
+                    $(".navbar-bar").show();
+                }
+                if (marktwerking.settings.mode === '1') {
+                    $(".navbar-streeplijst").hide();
+                    $(".navbar-bar").hide();
+                    $(".navbar-marktwerking").show();
+                }
+                if (marktwerking.settings.mode === '2') {
+                    $(".navbar-marktwerking").hide();
+                    $(".navbar-bar").hide();
+                    $(".navbar-streeplijst").show();
+                }
+                if ( newValue !== oldValue  &&  oldValue !== undefined ){
+                    //only after a real human click-change of the modus.
+
+                }
+            }
+
+        });
+
+/* 
+##	Settings/Close Modal Settings
+*/
 
         marktwerking.updateSQL = function(){
             sendData={categories: marktwerking.categories, items: marktwerking.items, settings :marktwerking.settings };
@@ -250,10 +328,13 @@ angular.module('barApp', [])
                 './updateSettings.php',
                 $.param(sendData),
                 { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }}
-            ).success(function(response) {
-                // sueccs
+            ).then(function(response) {
+				console.log("succes");
+                //get prices (due to possible modus change)
+                marktwerking.update();
 
-            }).error(function(response) {
+
+            }).catch(function(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
             });

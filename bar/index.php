@@ -108,13 +108,16 @@ foreach ($files as $key=>$value) {
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="../index.php" type="button">Beamer</a></li>
                     <li><a data-target="#financial" data-toggle="modal" type="button">Financial</a></li>
-                    <li><a data-target="#settings" data-toggle="modal" type="button">Settings</a></li>
+                    <li><a href="./backoffice.php" type="button">Settings</a></li>
                     <li><a href="./index.php?logout">Uitloggen</a></li>
                 </ul>
             </div>
             <div class="nav navbar-nav navbar-left">
-                <div class="navbar-text" id="timer" >4 min. 08 sec.</div>
-                <div class="navbar-text">Ronde {{ bar.round }} / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
+			
+                <div class="navbar-text navbar-marktwerking" id="timer" >Mode: Marktwerking | 04 min. 08 sec.</div>
+                <div class="navbar-text navbar-marktwerking">Ronde {{ bar.round }} / {{bar.settings.time_total*60/bar.settings.time_round}}</div>
+                <div class="navbar-text navbar-bar" id="time" >Mode: Bar | 14:00:00</div>
+                <div class="navbar-text navbar-streeplijst">Mode: Streeplijst | {{bar.settings.limit | currency:"&euro;" }} - {{bar.orderInfo.total | currency:"&euro;" }} = {{bar.orderInfo.diff | currency:"&euro;" }}</div>
             </div>
         </div>
     </div>
@@ -212,171 +215,6 @@ foreach ($files as $key=>$value) {
 				</div>
 			</div>
 		</div><!-- Modal-->
-		<div class="modal fade " id="settings" role="dialog">
-			<div class="modal-dialog modal-xlg">
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button class="close" data-dismiss="modal" type="button">&times;</button>
-						<h4 class="modal-title">
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="#general">Algemeen</a></li>
-                                <li><a data-toggle="tab" href="#drinks">Artikelen</a></li>
-                                <li><a data-toggle="tab" href="#category">Categorieen</a></li>
-                                <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
-                                <li><a data-toggle="tab" href="#stock">Voorraad</a></li>
-                                <li><a data-toggle="tab" href="#marktwerking">Marktwerking</a></li>
-                            </ul>
-						</h4>
-					</div>
-					<div class="modal-body">
-                        <div class="tab-content">
-                            <div id="general" class="tab-pane fade in active">
-
-                                <div class="radio">
-                                    <!--Bar=0, Marktwerking=1, Streeplijst=2 -->
-                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="0">Normale Bar</label>
-                                </div>
-                                <div class="radio">
-                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="1">Marktwerking</label>
-                                </div>
-                                <div class="radio">
-                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="2">Streeplijst tot maximaal:</label>
-                                    <input class="" type="text" ng-model="bar.settings.limit">
-                                </div>
-                            </div>
-
-                            <div id="marktwerking" class="tab-pane fade">
-
-                                <form>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Tijd ronde (min):</span>
-                                        <input id="time-round" type="text" class="form-control" name="time-round" ng-model="bar.settings.time_round">
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Tijd totaal (uur):</span>
-                                        <input id="time-total" type="text" class="form-control" name="time-total" placeholder="" ng-model="bar.settings.time_total">
-                                    </div>
-                                    <br>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Aantal ronden:</span>
-                                        <input id="round-total" type="text" class="form-control" name="round-total" placeholder="" value="{{bar.settings.time_total*60/bar.settings.time_round}}" disabled>
-                                    </div>
-                                    <br>
-                                    <button class="btn btn-danger" ng-click="settingsMarktwerkingReset()">Reset Marktwerking</button>
-
-                                </form>
-                            </div>
-
-                            <div id="drinks" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-sm-2">Naam</div>
-                                    <div class="col-sm-2">Prijs</div>
-                                    <div class="col-sm-2">Minimum</div>
-									<div class="col-sm-1">Volume</div>
-                                    <div class="col-sm-1">Actief</div>
-                                    <div class="col-sm-2">Foto uploaden</div>
-                                    <div class="col-sm-1">Link foto</div>
-                                    <div class="col-sm-1">Verwijderen</div>
-                                </div>
-                                <hr>
-
-
-
-                                <form action="index.php" method="post" enctype="multipart/form-data">
-                                    <div class="input-append row" ng-repeat="item in bar.items">
-                                        <input class="col-sm-2" type="text" ng-model="item.name">
-                                        <input type="text" class="settings-item-price col-sm-2" ng-model="item.start_price">
-                                        <input type="text" class="settings-item-price col-sm-2" ng-model="item.minimum_price">
-										<input type="text" class="settings-item-volume col-sm-1" ng-model="item.volume">
-                                        <label class="col-sm-1"><input type="checkbox" ng-model="item.active" >Actief</label>
-                                        <input type="file" name="{{item.id}}" id="fileToUpload_{{item.id}}" class="btn col-sm-2"></input>
-                                        <div class="col-sm-1">
-                                            <a href='../images/drinks/{{item.id}}.png'><img class=" settings-item-img" ng-src='../images/drinks/{{item.id}}.png' alt="no image"></img></a>
-                                        </div>
-                                        <button class="btn col-sm-1" ng-click="settingsItemRemove($index)">X</button>
-
-                                    </div>
-                                    <button class="btn btn-small" type="button" ng-click="settingsItemAdd(item.name,item.price,item.price_min,item.category,item.active )">Nieuwe rij toevoegen</button>
-                                    <input class="btn btn-small btn-info" type="submit" value="Foto's uploaden" name="submit">
-                                </form>
-                            </div>
-
-
-                            <div id="drinks-mix" class="tab-pane fade">
-<!--                                <div class="row">-->
-<!--                                    <div class="input-append col-md-3" ng-repeat="item_mix in bar.items" ng-if="item_mix.mix!=false">-->
-<!--                                        <div class="h4" >{{item_mix.name}}</div>-->
-<!--                                        <select name="mix" class="form-control" id="settingsMix{{ item_mix.id }}" ng-model="dummy" ng-change="updateMixDrinks(item_mix)" multiple>-->
-<!--                                            <option value="{{ item.id }}" ng-repeat="item in bar.items | filter : item.name!=''| filter : item.mix!=true" ng-selected="item_mix.mix_drinks.indexOf(item.id) !== -1">{{item.name}}</option>-->
-<!--                                        </select>-->
-<!---->
-<!--                                    </div>-->
-<!--                                </div>-->
-                            </div>
-
-                            <div id="category" class="tab-pane fade">
-                                <button class="btn btn-small" type="button" ng-click="settingsCategoryAdd()">Nieuwe Categorie</button>
-                                <div class="row" >
-                                    <div class="col-sm-2" ng-repeat="category in bar.categories">
-                                        <input  type="text" ng-model="category.name">
-                                        <button class="btn btn-small" ng-click="settingsCategoryRemove($index)">X</button>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="input-append col-md-3" ng-repeat="item in bar.items" ng-if="item.active!=false" >
-                                        <div class="h4" >{{item.name}}</div>
-                                        <select name="category" class="form-control" id="settingsItem{{ item.id }}" ng-model="dummy" ng-change="updateItemCategories(item)" multiple>
-                                           <option value="{{ category.id }}" ng-repeat="category in bar.categories" ng-selected="item.categories.indexOf(category.id) !== -1">{{category.name}}</option>
-                                        </select>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="stock" class="tab-pane fade">
-
-                                <div class="row">
-                                    <div class="col-xs-2">Datum</div>
-                                    <div class="col-xs-2">Naam</div>
-                                    <div class="col-xs-2 settings-stock-volume" >volume</div>
-                                    <div class="col-xs-2 settings-stock-itempackage" >Items per colli</div>
-                                    <div class="col-xs-1">Colli</div>
-                                    <div class="col-xs-1">Items los</div>
-                                    <input type="button" class="settings-stock-btn col-xs-2 " ng-click="settingsShowStock()" value="Volume/item & item/colli">
-
-                                </div>
-                                <hr>
-
-
-
-
-                                <div class="input-append row" ng-repeat="item in bar.items">
-                                    <input type="text" class="settings-stock-date col-xs-2" disabled="true" ng-model="item.stock[0].date">
-                                    <input type="text" class="settings-stock-name col-xs-2" disabled="true" ng-model="item.name">
-                                    <input type="text" class="settings-stock-volume col-xs-2" ng-model="item.stock[0].volume">
-                                    <input type="text" class="settings-stock-itempackage col-xs-2  " ng-model="item.stock[0].item_package">
-                                    <input type="text" class="settings-stock-package col-xs-1"  ng-model="item.stock[0].package">
-                                    <input type="text" class="settings-stock-item col-xs-1" ng-model="item.stock[0].item">
-
-                                </div>
-
-
-
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <p class="pull-left">Let op! Aanpassingen in de instellingen worden direct toegepast</p>
-                        <button class="btn btn-default" data-dismiss="modal" type="button">Sluiten</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
         <?php if($message != null): ?>
         <div class="footer">
             <div class="footer-message-image">
@@ -389,9 +227,8 @@ foreach ($files as $key=>$value) {
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.js"></script>
         <script src="../js/bar.js"></script>
-
 
 
     </body>
