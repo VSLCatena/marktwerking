@@ -20,3 +20,19 @@ if (!empty($data)) {
     }
 
 }
+
+// get info of all orders
+$orderInfo=array();
+$orderInfo['total']=0;
+$orderInfo['all']=array();
+$query = $pdo->query('SELECT * FROM orders');
+foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $order) {
+    if (!array_key_exists($order['drink_id'],$orderInfo)){
+        $orderInfo[$order['drink_id']]=0;
+    }
+    $orderInfo['total']+=$order['amount']*$order['price'];
+    $orderInfo[$order['drink_id']]+=$order['amount']*$order['price'];
+    array_push($orderInfo['all'],$order);
+
+}
+echo json_encode($orderInfo);
