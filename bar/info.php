@@ -30,16 +30,17 @@ foreach($drinks as &$drink){
     }
     $drink['categories'] = $drink_cat[$drink['id']];
 }
-$data['drinks'] = $drinks;
+
 
 // fetch all stock data
+$stock = array();
 $query = $pdo->query("SELECT * FROM `stock` ORDER BY `date` DESC");
 // Save it to a separate array to easily link categories to it
 foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
     $stock[$row['drink_id']][] = $row;
 }
 
-//link stock data
+//link stock data to drinks
 foreach($drinks as &$drink) {
     if (!array_key_exists($drink['id'], $stock)) {
         $drink['stock'] = array();
@@ -48,6 +49,27 @@ foreach($drinks as &$drink) {
     $drink['stock'] = $stock[$drink['id']];
 }
 
+// fetch all volume data
+$query = $pdo->query("SELECT * FROM `volumes`");
+// Save it to a separate array to easily link categories to it
+foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+    $volumes[$row['drink_id']][] = $row;
+}
+
+//link volume data to drinks
+foreach($drinks as &$drink) {
+    if (!array_key_exists($drink['id'], $volumes)) {
+        $drink['volumes'] = array();
+        continue;
+    }
+    $drink['volumes'] = $volumes[$drink['id']];
+}
+
+
+//make all drinks permanent in this php-session.
+$data['drinks'] = $drinks;
+
+
 // fetch all settings
 $query = $pdo->query("SELECT * FROM settings");
 $settings = array();
@@ -55,6 +77,24 @@ foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
     $settings[$row['setting']] = $row['value'];
 }
 $data['settings'] = $settings;
+
+
+$orderInfo=array();
+$orderInfo['total']=0;
+$orderInfo['all']=array();
+$query = $pdo->query('SELECT * FROM orders');
+foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $order) {
+    if (!array_key_exists($order['drink_id'], $orderInfo)) {
+        $orderInfo[$order['drink_id']] = 0;
+    }
+    $orderInfo['total'] += $order['amount'] * $order['price'];
+    $orderInfo[$order['drink_id']] += $order['amount'] * $order['price'];
+    array_push($orderInfo['all'], $order);
+}
+$data['orderInfo']=$orderInfo;
+
+
+
 
 
 echo json_encode($data);
