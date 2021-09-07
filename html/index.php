@@ -1,4 +1,58 @@
 <?php
+
+if (!function_exists('getenv_docker')) {
+        // https://github.com/docker-library/wordpress/issues/588 (WP-CLI will load this file 2x)
+        function getenv_docker($env, $default) {
+                if ($fileEnv = getenv($env . '_FILE')) {
+                        return rtrim(file_get_contents($fileEnv), "\r\n");
+                }
+                else if (($val = getenv($env)) !== false) {
+                        return $val;
+                }
+                else {
+                        return $default;
+                }
+        }
+}
+function ipCIDRCheck ($IP, $CIDR) {
+    list ($net, $mask) = split ("/", $CIDR);
+
+    $ip_net = ip2long ($net);
+    $ip_mask = ~((1 << (32 - $mask)) - 1);
+
+    $ip_ip = ip2long ($IP);
+
+    $ip_ip_net = $ip_ip & $ip_mask;
+
+    return ($ip_ip_net == $ip_net);
+  }
+  echo ipCheck ("192.168.1.23", "192.168.1.0/24");
+
+
+function isAllowed($ip){
+    $whitelist = array(getenv_docker('MW_IP_WHITELIST',  'localhost'));
+
+    // If the ip is matched, return true
+    if(in_array($ip, $whitelist)) {
+        return true;
+    }
+
+    foreach($whitelist as $i){
+        $wildcardPos = strpos($i, "*");
+
+        // Check if the ip has a wildcard
+        if($wildcardPos !== false && substr($ip, 0, $wildcardPos) . "*" == $i) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+(! isAllowed($_SERVER['REMOTE_ADDR'])) {
+    header('Location: http://google.com');
+
+
 require_once('core.php');
 ?>
 <!DOCTYPE html>
