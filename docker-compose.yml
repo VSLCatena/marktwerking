@@ -1,0 +1,77 @@
+version: '3.8'
+services:
+
+  phpmyadmin: 
+    image: ghcr.io/linuxserver/phpmyadmin 
+    container_name: phpmyadmin 
+    environment:
+      - PUID=1000 
+      - PGID=1000 
+      - TZ=America/New_York 
+      - PMA_ARBITRARY=1
+      - PMA_ABSOLUTE_URI=http://phpmyadminserver:1234
+    volumes: 
+      - ./etc/phpmyadmin:/config
+    ports: 
+      - 1234:80
+    restart: unless-stopped
+    networks:
+      - net
+
+  #MySQL Service
+  db:    
+    hostname: db
+    container_name: db
+    image: 'yobasystems/alpine-mariadb:latest'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'rootpassword'
+      MYSQL_DATABASE: 'somedatabase'
+      MYSQL_USER: 'someuser'
+      MYSQL_PASSWORD: 'somepassword'
+    volumes:
+      - dbdata:/var/lib/mysql/ # allows you to stop and restart the db service without losing data
+      - ./etc/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./html:/docker-entrypoint-initdb.d #autoload *.sql
+    networks:
+      - net
+    restart: always
+
+  #PHP Service
+  php:
+    hostname: php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    depends_on: 
+      - db
+    environment:
+      - MW_DB_HOST=db
+      - MW_DB_USERNAME=someuser
+      - MW_DB_PASSWORD=somepassword
+      - MW_DB_DATABASE=somedatabase
+      - MW_BAR_PASSWORD=someaccesspage
+      - MW_IP_WHITELIST=192.168.0.0/24
+      - TITLE=Some Event
+    tty: true
+    ports:
+      - 1235:80
+    volumes:
+      - ./html:/var/www/html
+      - "./etc/php/local.ini:/usr/local/etc/php/conf.d/local.ini"
+    networks:
+      - net
+
+#Docker Networks
+networks:
+  net:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 192.168.31.0/29 #192.168.31.1 - 192.168.31.6 (bc:7)
+    driver_opts:
+     com.docker.network.bridge.name: docker_net
+volumes:
+  dbdata:
+    driver: local
