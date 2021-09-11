@@ -2,7 +2,7 @@
 
 if( ! function_exists('getenv_docker'))
 {
-$GLOBALS['debug'] = true;
+$GLOBALS['debug'] = false;
 function getenv_docker($env, $default) {
 		if ($fileEnv = getenv($env . '_FILE')){ 
 				if($GLOBALS['debug']){echo "<br>file:";print_r(rtrim(file_get_contents($fileEnv), "\r\n"));}
