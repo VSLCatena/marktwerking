@@ -9,6 +9,11 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install extensions
+#
+# use docker-php-ext-install, 
+# pecl, and/or phpize to install the necessary 
+# additional extensions and utilities.
+# 
 RUN docker-php-ext-install pdo_mysql mbstring zip
 
 #Set user
