@@ -1,4 +1,71 @@
 <?php
+$GLOBALS['debug'] = true;
+if ($GLOBALS['debug']) {
+	error_reporting(E_ALL);
+	ini_set('display_errors',1);
+}
+
+function getenv_docker($env, $default) {
+		if ($fileEnv = getenv($env . '_FILE')){ 
+				if($GLOBALS['debug']){echo "<br>file:";print_r(rtrim(file_get_contents($fileEnv), "\r\n"));}
+				return rtrim(file_get_contents($fileEnv), "\r\n");
+		}
+		else if (($val = getenv($env)) !== false) {
+				if($GLOBALS['debug']){echo "<br>getenv:";print_r($val);}
+				return $val;
+		}
+		else {
+				if($GLOBALS['debug']){echo "<br>default:";print_r($default);}
+				return $default;
+		}
+}
+
+function ipCIDRCheck ($IP, $CIDR) {
+    list ($net, $mask) = explode("/", $CIDR); 
+
+    $ip_net = ip2long ($net);
+    $ip_mask = ~((1 << (32 - $mask)) - 1);
+
+    $ip_ip = ip2long ($IP);
+
+    $ip_ip_net = $ip_ip & $ip_mask;
+
+    return ($ip_ip_net == $ip_net);
+  }
+
+
+function isAllowed($ip){
+    $whitelist = array(getenv_docker('MW_IP_WHITELIST',  array('127.0.0.1','192.168.0.0/16')));
+
+    // If the ip is matched, return true
+    if(in_array($ip, $whitelist)) {
+		if($GLOBALS['debug']){echo "<br>IP in whitelist";}
+        return true;
+    }
+
+    foreach($whitelist as $i){
+        $wildcardPos = strpos($i, "*");
+        // Check if the ip has a wildcard
+        if($wildcardPos !== false && substr($ip, 0, $wildcardPos) . "*" == $i) {
+            if($GLOBALS['debug']){echo "<br>IP in wildcard";}
+			return true;
+        }
+        if(ipCIDRCheck ($ip, $i)){
+			if($GLOBALS['debug']){echo "<br>IP in CIDR";}
+            return true;
+        }
+
+    }
+
+    return false;
+}
+
+if(! isAllowed($_SERVER['REMOTE_ADDR'])) {
+	if($GLOBALS['debug']){echo "<br>REMOTE_ADDR:"; print_r($_SERVER['REMOTE_ADDR']);}
+    header('Location: http://google.com');
+} else{
+	if($GLOBALS['debug']){echo "<br>REMOTE_ADDR:"; print_r($_SERVER['REMOTE_ADDR']);}
+}
 require_once('core.php');
 ?>
 <!DOCTYPE html>
@@ -57,3 +124,4 @@ require_once('core.php');
     <script src="./js/index.js"></script>
 </body>
 </html>
+
