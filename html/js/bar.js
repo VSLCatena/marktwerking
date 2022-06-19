@@ -104,7 +104,7 @@ angular.module('barApp', [])
                 marktwerking.categories = response.data.categories;
                 marktwerking.items = response.data.drinks;
                 for(var key in marktwerking.items){
-                    if (marktwerking.items[key].active==="1"){marktwerking.items[key].active=true;}
+                    if (marktwerking.items[key].active===1){marktwerking.items[key].active=true;}
                     else {marktwerking.items[key].active=false;}};
                 marktwerking.settings = response.data.settings;
                 console.debug(marktwerking.settings);
