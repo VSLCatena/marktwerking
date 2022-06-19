@@ -1,0 +1,103 @@
+version: '3.8'
+
+
+x-name:
+ - &NAME 'mw'
+ - &NET 'mw_net'
+
+x-variables:
+ - &DB_HOST 'db'
+ - &DB_ROOT_PASSWORD 'password'
+ - &DB_DATABASE 'db'
+ - &DB_USERNAME 'someuser'
+ - &DB_PASSWORD 'somepassword'
+
+x-template: &default-template
+  environment:
+    TZ: 'Europe/Amsterdam'
+  networks:
+    - net
+  restart: "unless-stopped"
+  volumes:
+    - '/etc/localtime:/etc/localtime:ro'
+
+#Docker Networks
+networks:
+  net:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 192.168.8.209/29 #(192net, 8.193-8.198hosts, 199broadcast)
+    driver_opts:
+      com.docker.network.bridge.name: *NET
+
+services:
+  phpmyadmin:
+    image: ghcr.io/linuxserver/phpmyadmin
+    container_name: phpmyadmin
+    profiles:
+      - debug
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Amsterdam
+      - PMA_ARBITRARY=1
+      - PMA_ABSOLUTE_URI=http://phpmyadmin:1234
+    volumes:
+      - ./etc/phpmyadmin:/config
+    ports:
+      - 1234:80
+    restart: unless-stopped
+    networks:
+      - net
+
+  #MySQL Service
+  db:
+    hostname: db
+    container_name: db
+    image: 'yobasystems/alpine-mariadb:latest'
+    environment:
+      MYSQL_ROOT_PASSWORD: *DB_ROOT_PASSWORD
+      MYSQL_DATABASE: *DB_DATABASE
+      MYSQL_USER: *DB_USERNAME
+      MYSQL_PASSWORD: *DB_PASSWORD
+    volumes:
+      - dbdata:/var/lib/mysql/ # allows you to stop and restart the db service without losing data
+      - ./etc/mysql:/etc/my.cnf.d
+      - ./html:/docker-entrypoint-initdb.d #autoload *.sql
+    #user: "1000:101"
+    networks:
+      - net
+    restart: always
+
+  #PHP Service
+  *NAME:
+    <<: *default-template
+    hostname: php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    depends_on:
+      - db
+    environment:
+      MW_DB_HOST: *DB_HOST
+      MW_DB_USERNAME: *DB_USERNAME
+      MW_DB_PASSWORD: *DB_PASSWORD
+      MW_DB_DATABASE: *DB_DATABASE
+      MW_BAR_PASSWORD: Bar2022
+      MW_IP_WHITELIST: 192.168.0.0/16
+      TITLE: Marktwerking
+    tty: true
+    ports:
+      - 1235:80
+    volumes:
+      - ./html:/var/www/html
+      - "./etc/php/local.ini:/usr/local/etc/php/conf.d/local.ini"
+    networks:
+      - net
+
+volumes:
+  dbdata:
+    driver: local
