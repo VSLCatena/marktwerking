@@ -1,73 +1,61 @@
 <?php
-require_once('settings.php');
+require_once('core.php');
 
-if (MW_DEBUG) {
+if (MW_DEBUG == True) {
 	error_reporting(E_ALL);
 	ini_set('display_errors',1);
 }
 
-function getenv_docker($env, $default) {
-		if ($fileEnv = getenv($env . '_FILE')){ 
-				if(MW_DEBUG){echo "<br>file:";print_r(rtrim(file_get_contents($fileEnv), "\r\n"));}
-				return rtrim(file_get_contents($fileEnv), "\r\n");
-		}
-		else if (($val = getenv($env)) !== false) {
-				if(MW_DEBUG){echo "<br>getenv:";print_r($val);}
-				return $val;
-		}
-		else {
-				if(MW_DEBUG){echo "<br>default:";print_r($default);}
-				return $default;
-		}
-}
 
 function ipCIDRCheck ($IP, $CIDR) {
-    list ($net, $mask) = explode("/", $CIDR); 
-
+    list ($net, $mask) = explode ('/', $CIDR);
+    
     $ip_net = ip2long ($net);
     $ip_mask = ~((1 << (32 - $mask)) - 1);
 
     $ip_ip = ip2long ($IP);
 
-    $ip_ip_net = $ip_ip & $ip_mask;
-
-    return ($ip_ip_net == $ip_net);
-  }
-
+    return (($ip_ip & $ip_mask) == ($ip_net & $ip_mask));
+}
 
 function isAllowed($ip){
-    $whitelist = array(getenv_docker('MW_IP_WHITELIST',  array('127.0.0.1','192.168.0.0/16')));
-
     // If the ip is matched, return true
-    if(in_array($ip, $whitelist)) {
-		if(MW_DEBUG){echo "<br>IP in whitelist";}
+    if(in_array($ip, MW_IP_WHITELIST)) {
+		if(MW_DEBUG == True){echo "\nIP is in whitelist\n";}
         return true;
     }
 
-    foreach($whitelist as $i){
+    foreach(MW_IP_WHITELIST as $i){
         $wildcardPos = strpos($i, "*");
         // Check if the ip has a wildcard
         if($wildcardPos !== false && substr($ip, 0, $wildcardPos) . "*" == $i) {
-            if(MW_DEBUG){echo "<br>IP in wildcard";}
+            if(MW_DEBUG == True){echo "\nIP $ip in wildcard\n";}
 			return true;
         }
-        if(ipCIDRCheck ($ip, $i)){
-			if(MW_DEBUG){echo "<br>IP in CIDR";}
-            return true;
+        if(str_contains($i,"/")){
+            if(ipCIDRCheck ($ip, $i)){
+			    if(MW_DEBUG == True){echo "\nIP $ip in CIDR $i\n";}
+                return true;
+            }
         }
-
     }
-
     return false;
 }
 
 if(! isAllowed($_SERVER['REMOTE_ADDR'])) {
-	if(MW_DEBUG){echo "<br>REMOTE_ADDR:"; print_r($_SERVER['REMOTE_ADDR']);}
-    header('Location: http://google.com');
+    if(MW_DEBUG !=True){
+        header('Location: about:blank');
+    } else {
+        echo "<pre>";
+        echo "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "<br>" . "MW_IP_WHITELIST:";
+        print_r(MW_IP_WHITELIST);
+        echo "</pre>";
+    }
 } else{
-	if(MW_DEBUG){echo "<br>REMOTE_ADDR:"; print_r($_SERVER['REMOTE_ADDR']);}
+    //
 }
-require_once('core.php');
+
+
 ?>
 <!DOCTYPE html>
 <html lang="nl">
