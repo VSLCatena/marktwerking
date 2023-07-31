@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `name` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `drinks` (
   PRIMARY KEY (`id`),
   KEY `active` (`active`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 --
 -- Dumping data for table `drinks`
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `drink_category` (
   `category_id` int(4) UNSIGNED NOT NULL,
   UNIQUE KEY `index` (`drink_id`,`category_id`),
   KEY `category_fk` (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `drink_category`
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   PRIMARY KEY (`id`),
   KEY `drink_id` (`drink_id`),
   KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `setting` varchar(32) NOT NULL,
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`setting`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `settings`
