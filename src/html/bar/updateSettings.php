@@ -4,9 +4,15 @@ error_reporting(E_ALL);
 ini_set('display_errors',1);
 
 require_once('../core.php');
-//echo '<pre>';
-//var_dump($_POST);
-//echo '</pre>';
+
+if (MW_DEBUG == True) {
+	error_reporting(E_ALL);
+	ini_set('display_errors',1);
+	echo '<pre>';
+	var_dump($_POST);
+	echo '</pre>';
+}
+
 
 $data=$_POST;
 

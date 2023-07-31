@@ -1,8 +1,11 @@
 <?php 
 include("./password_protect.php");
 $message=null;
-#error_reporting(E_ALL);
-#ini_set('display_errors', 1);
+if (MW_DEBUG == True) {
+	error_reporting(E_ALL);
+	ini_set('display_errors',1);
+}
+
 //create a new clean array
 $files = [];
 foreach ($_FILES as $key=>$value) {
@@ -288,6 +291,7 @@ foreach ($files as $key=>$value) {
                                         <input class="col-sm-3" type="text" ng-model="item.name">
                                         <input type="text" class="settings-item-price col-sm-2" ng-model="item.start_price">
                                         <input type="text" class="settings-item-price col-sm-2" ng-model="item.minimum_price">
+                                        <!-- <input type="text" class="settings-category col-sm-2" ng-model="item.category"> -->
                                         <label class="col-sm-1"><input type="checkbox" ng-model="item.active" >Actief</label>
                                         <input type="file" name="{{item.id}}" id="fileToUpload_{{item.id}}" class="btn col-sm-2"></input>
                                         <div class="col-sm-1">
@@ -335,7 +339,7 @@ foreach ($files as $key=>$value) {
                             </div>
                             <div id="stock" class="tab-pane fade">
 
-                            <p>hier komt ooit de voorraadinformatie</p>
+                            <p>voorraadinformatie</p>
                             </div>
 
                         </div>
