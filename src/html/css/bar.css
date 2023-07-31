@@ -1,0 +1,151 @@
+.checkout-item-el {
+
+    display:inline-block
+
+}
+
+.checkout-item {
+
+    font-size:14px;
+    font-family: "Comic Sans MS";
+
+}
+
+.checkout-list {
+
+    height:400px;
+
+}
+
+.checkout-header{
+    font-size:24px;
+    font-family: "Bauhaus 93";
+}
+
+.checkout-content {
+    min-height: 250px;
+}
+
+.checkout-total {
+    align-self: flex-end;
+}
+
+.checkout-total-price{
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.checkout-previous-price {
+    font-size: 15px;
+}
+
+hr {
+    margin-top: 5px;
+    border-top: 1px solid #aaa;
+}
+
+.orderlist-prev hr {
+    margin-bottom: 5px;
+}
+
+.checkout-item-mod {
+    width: 40%;
+    margin: 2%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.checkout-order-pay{
+    padding:20px;
+    margin-top:25px;
+}
+
+.orderlist {
+    box-shadow:1px 1px 1px 1px;
+}
+
+.orderlist-prev {
+    margin-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+.category{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+.btn-sq {
+  width: 100px;
+  height: 100px !important;
+}
+
+.products {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.btn-sq-prod {
+    position: relative;
+    width: 22.5% !important;
+    background-size: cover;
+    background-position: center center;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 5px;
+    border: 1px solid black;
+    padding: 0;
+}
+
+.btn-sq-prod:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.btn-sq-prod .btn-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-basis: 150px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    justify-content: center;
+    flex-direction: column;
+    white-space: normal;
+}
+
+.btn-sq-prod-price {
+    position:absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+}
+
+.modal-backdrop.in {
+    opacity: 0.8;
+}
+
+
+.modal-xlg {
+    width:75%;
+}
+
+
+/*.settings-item-price{
+    width:5%;
+}*/
+
+input[type=file] {
+    display: inline;
+}
+
+.settings-item-img{
+    height:35px;
+    width:35px;
+    border:1px solid rgba(8, 8, 8, 0.09);
+}
