@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY html/ /var/www/html/
     
 RUN mkdir /docker-entrypoint-initdb.d && \
-    cp /var/www/html/marktwerking.structure.sql /docker-entrypoint-initdb.d/
+    cp /var/www/html/data/marktwerking.structure.sql /docker-entrypoint-initdb.d/
 
 USER www-data  
 
