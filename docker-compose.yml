@@ -51,6 +51,7 @@ services:
   marktwerking.php:
     hostname: php
     image: ghcr.io/vslcatena/marktwerking/docker-marktwerking:latest
+    pull_policy: if_not_present
     build:
       context: ./src
       dockerfile: Dockerfile
