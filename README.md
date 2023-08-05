@@ -27,7 +27,7 @@ Modules used:
 
 ## Steps
 
-1. ```git clone https://github.com/vslcatena/docker-marktwerking``` 
+1. ```git clone https://github.com/vslcatena/marktwerking``` 
 
 2. Fill in your variables in docker-compose.yml and check with ```docker compose config```
 
