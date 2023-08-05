@@ -39,6 +39,7 @@ function isAllowed($ip){
             }
         }
     }
+	if(MW_DEBUG == True){echo "\nIP $ip not in whitelist\n";}
     return false;
 }
 
