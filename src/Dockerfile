@@ -8,11 +8,16 @@ RUN apt-get update && apt-get install -y \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY html/ /var/www/html/
-    
+ENV DEPLOY_ENV=production
 RUN mkdir /docker-entrypoint-initdb.d && \
-    cp /var/www/html/data/marktwerking.structure.sql /docker-entrypoint-initdb.d/
+    cp /var/www/html/data/marktwerking.structure.sql /docker-entrypoint-initdb.d/ && \
+    cp /usr/local/etc/php/php.ini-${DEPLOY_ENV} /usr/local/etc/php/php.ini && \
+    sed -ri ' \
+        s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
+        s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
+        ' /usr/local/etc/php/php.ini
 
-USER www-data  
+USER www-data
 
 CMD ["apachectl", "-D", "FOREGROUND"]
 
