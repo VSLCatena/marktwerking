@@ -67,7 +67,7 @@ if (!empty($data)) {
 			$stmt->execute($array_del_id);
 		}
 		foreach ($data['items'] as $key => $value) {
-			if ($value['active']=='true') {$value['active']="1";} else {$value['active']="0";}
+			if ($value['active']=='true') {$value['active']=1;} else {$value['active']=0;}
 			$stmt = $pdo->prepare("
 				INSERT INTO `drinks` (id,name,start_price,minimum_price,active)
 				VALUES (?,?,?,?,?) 
