@@ -226,8 +226,8 @@ foreach ($files as $key=>$value) {
                                 <li class="active"><a data-toggle="tab" href="#general">Algemeen</a></li>
                                 <li><a data-toggle="tab" href="#drinks">Artikelen</a></li>
                                 <li><a data-toggle="tab" href="#category">Categorieen</a></li>
-                                <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
-                                <li><a data-toggle="tab" href="#stock">Voorraad</a></li>
+                                <!-- <li><a data-toggle="tab" href="#drinks-mix">Gemixte artikelen</a></li>
+                                <li><a data-toggle="tab" href="#stock">Voorraad</a></li> -->
                                 <li><a data-toggle="tab" href="#marktwerking">Marktwerking</a></li>
                             </ul>
 						</h4>
@@ -238,14 +238,14 @@ foreach ($files as $key=>$value) {
 
                                 <div class="radio">
                                     <!--Bar=0, Marktwerking=1, Streeplijst=2 -->
-                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="0">Normale Bar</label>
+                                    <label><input type="radio" disabled  name="settings-type-bar" ng-model="bar.settings.mode" value="0">Normale Bar</label>
                                 </div>
                                 <div class="radio">
                                     <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="1">Marktwerking</label>
                                 </div>
                                 <div class="radio">
-                                    <label><input type="radio" name="settings-type-bar" ng-model="bar.settings.mode" value="2">Streeplijst tot maximaal:</label>
-                                    <input class="" type="text" ng-model="bar.settings.limit">
+                                    <label><input type="radio" disabled  name="settings-type-bar" ng-model="bar.settings.mode" value="2">Streeplijst tot maximaal:</label>
+                                    <input type="text" disabled class="" ng-model="bar.settings.limit">
                                 </div>
                             </div>
 
