@@ -1,6 +1,6 @@
 # Marktwerking
 
-[![Docker](https://github.com/VSLCatena/marktwerking/actions/workflows/main.yml/badge.svg)](https://github.com/VSLCatena/marktwerking/actions/workflows/main.yml)
+[![Docker](https://github.com/VSLCatena/marktwerking/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/VSLCatena/marktwerking/actions/workflows/docker-publish.yml)
 
 
 The forces of a market during one evening? It is possible! Include your drinks and boundaries and enjoy the evening. The prices will fluctuate based on the sellings.
