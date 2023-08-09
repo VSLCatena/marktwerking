@@ -55,6 +55,9 @@ services:
     build:
       context: ./src
       dockerfile: Dockerfile
+      args:
+        - DEPLOY_ENV="development"
+#       - DEPLOY_ENV="production"
     container_name: marktwerking.php
     environment:
       MW_DB_HOST: *DB_HOST
@@ -66,6 +69,8 @@ services:
       MW_DEBUG: *MW_DEBUG
       TITLE: Marktwerking 2023
     tty: true
+    volumes:
+      - ./src/html:/var/www/html
     ports:
       - 4080:80
     networks:

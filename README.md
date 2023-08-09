@@ -30,6 +30,8 @@ Modules used:
 1. ```git clone https://github.com/vslcatena/marktwerking``` 
 
 2. Fill in your variables in docker-compose.yml and check with ```docker compose config```
+   - Dev: set build arg to development and use ./src/html as volume
+   - Prod: use image from GitHub and comment volumes
 
 3. ```docker-compose up  [--build] ```
 
