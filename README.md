@@ -1,4 +1,8 @@
 # Marktwerking
+
+[![Docker](https://github.com/VSLCatena/marktwerking/actions/workflows/main.yml/badge.svg)](https://github.com/VSLCatena/marktwerking/actions/workflows/main.yml)
+
+
 The forces of a market during one evening? It is possible! Include your drinks and boundaries and enjoy the evening. The prices will fluctuate based on the sellings.
 
 This is a package that is fully web-based. So no special SQL-knowledgde is needed. It contains two view settings:
