@@ -249,14 +249,11 @@ angular.module('barApp', [])
         };
 
         $("#settings").on("hide.bs.modal", function () {
-            // put your default event here
-            if(marktwerking.reset == true){
-                location.reload(true)
-            } else {
+            if(marktwerking.reset == false){
+                // update sql only if not reset
                 marktwerking.updateSQL();
             }
-            //uncomment dit hieronder nadat hij af is.
-            //location.reload(true)
+            location.reload(true)
         });
 
     });
