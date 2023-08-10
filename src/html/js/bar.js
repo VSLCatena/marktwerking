@@ -17,6 +17,7 @@ angular.module('barApp', [])
     })
     .controller('barController', function($scope, $http, $interval) {
         var marktwerking = this;
+        marktwerking.reset = false;
         marktwerking.categories = [];
         marktwerking.items = [];
         marktwerking.order = [];
@@ -223,11 +224,11 @@ angular.module('barApp', [])
                     marktwerking.order = []
 
                 }).error(function (response) {
+                    console.error(response)
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
-
-                location.reload(true)
+                marktwerking.reset = true;
             }
         };
 
@@ -249,7 +250,11 @@ angular.module('barApp', [])
 
         $("#settings").on("hide.bs.modal", function () {
             // put your default event here
-            marktwerking.updateSQL();
+            if(marktwerking.reset == true){
+                location.reload(true)
+            } else {
+                marktwerking.updateSQL();
+            }
             //uncomment dit hieronder nadat hij af is.
             //location.reload(true)
         });
