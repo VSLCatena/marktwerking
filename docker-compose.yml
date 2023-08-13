@@ -49,7 +49,7 @@ services:
   #PHP Service
   marktwerking.php:
     hostname: php
-    image: ghcr.io/vslcatena/marktwerking/marktwerking:latest
+    image: ghcr.io/vslcatena/marktwerking:latest
     pull_policy: if_not_present
     build:
       context: ./src
