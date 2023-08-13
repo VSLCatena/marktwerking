@@ -5,11 +5,7 @@ x-variables:
   - &DB_USERNAME "dbuser"
   - &DB_PASSWORD "dbpass"
   - &MW_ADMIN_PASSWORD "MW23"
-  - &NETWORK_SUBNET "${MW_NET:-192.168.32.0/29}"
   - &MW_DEBUG "True"
-  - &MW_PORT "${MW_PORT:-4080}"
-  - &MW_CHOST_IP "${MW_CHOST_IP:-0.0.0.0}"
-
   
 services:
 
@@ -67,7 +63,7 @@ services:
       MW_DB_PASSWORD: *DB_PASSWORD
       MW_DB_DATABASE: *DB_DATABASE
       MW_BAR_PASSWORD: *MW_ADMIN_PASSWORD
-      MW_IP_WHITELIST: 192.168.4.0/24,192.168.40.0/24
+      MW_IP_WHITELIST: *MW_IP_WHITELIST
       MW_DEBUG: *MW_DEBUG
       TITLE: Marktwerking 2023
     tty: true
@@ -75,8 +71,8 @@ services:
       - ./src/html:/var/www/html
     ports:
       - target: 80
-        host_ip: *MW_CHOST_IP
-        published: *MW_PORT
+        host_ip: ${MW_CHOST_IP:-0.0.0.0}
+        published: ${MW_PORT:-4080}
     networks:
       - net
 
@@ -87,7 +83,7 @@ networks:
     ipam:
      driver: default
      config:
-       - subnet: *NETWORK_SUBNET
+       - subnet: ${MW_NET:-192.168.32.0/29}
     driver_opts:
      com.docker.network.bridge.name: marktw_net
 volumes:
