@@ -1,13 +1,3 @@
-x-variables:
-  - &DB_HOST "db"
-  - &DB_ROOT_PASSWORD "db"
-  - &DB_DATABASE "marktwerking"
-  - &DB_USERNAME "dbuser"
-  - &DB_PASSWORD "dbpass"
-  - &MW_ADMIN_PASSWORD "MW23"
-  - &MW_DEBUG "True"
-  - &MW_IP_WHITELIST "192.168.4.0/24,192.168.40.0/24"
-  
 services:
 
   #phpmyadmin
@@ -18,9 +8,9 @@ services:
     profiles:
       - debug
     environment:
-      PMA_HOST: *DB_HOST
+      PMA_HOST: ${DB_HOST:-db}
       PMA_USER: root
-      PMA_PASSWORD: *DB_ROOT_PASSWORD
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD:-db}
       TZ: Europe/Amsterdam
     ports: 
       - 4081:80
@@ -34,10 +24,10 @@ services:
     container_name: marktwerking.db
     image: 'yobasystems/alpine-mariadb:latest'
     environment:
-      MYSQL_ROOT_PASSWORD: *DB_ROOT_PASSWORD
-      MYSQL_DATABASE: *DB_DATABASE
-      MYSQL_USER: *DB_USERNAME
-      MYSQL_PASSWORD: *DB_PASSWORD
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-db}
+      MYSQL_DATABASE: ${DB_DATABASE:-marktwerking}
+      MYSQL_USER: ${DB_USERNAME:-dbuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-dbpass}
     volumes:
       - dbdata:/var/lib/mysql/ # allows you to stop and restart the db service without losing data
     volumes_from:
@@ -58,13 +48,13 @@ services:
         - DEPLOY_ENV="production" #development
     container_name: marktwerking.php
     environment:
-      MW_DB_HOST: *DB_HOST
-      MW_DB_USERNAME: *DB_USERNAME
-      MW_DB_PASSWORD: *DB_PASSWORD
-      MW_DB_DATABASE: *DB_DATABASE
-      MW_BAR_PASSWORD: *MW_ADMIN_PASSWORD
-      MW_IP_WHITELIST: *MW_IP_WHITELIST
-      MW_DEBUG: *MW_DEBUG
+      MW_DB_HOST: ${DB_HOST:-db}
+      MW_DB_USERNAME: ${DB_USERNAME:-dbuser}
+      MW_DB_PASSWORD: ${DB_PASSWORD:-dbpass}
+      MW_DB_DATABASE: ${DB_DATABASE:-marktwerking}
+      MW_BAR_PASSWORD: ${MW_ADMIN_PASSWORD:-MW23}
+      MW_IP_WHITELIST: ${MW_IP_WHITELIST:-"192.168.4.0/24,192.168.40.0/24"}
+      MW_DEBUG: ${MW_DEBUG:-False}
       TITLE: Marktwerking 2023
     tty: true
   # volumes:
