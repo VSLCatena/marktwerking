@@ -5,8 +5,10 @@ x-variables:
   - &DB_USERNAME "dbuser"
   - &DB_PASSWORD "dbpass"
   - &MW_ADMIN_PASSWORD "MW23"
-  - &NETWORK_SUBNET "192.168.31.0/29"
+  - &NETWORK_SUBNET "${MW_NET:-192.168.32.0/29}"
   - &MW_DEBUG "True"
+  - &MW_PORT "${MW_PORT:-4080}"
+  - &MW_CHOST_IP "${MW_CHOST_IP:-0.0.0.0}"
 
   
 services:
@@ -50,7 +52,7 @@ services:
   #PHP Service
   marktwerking.php:
     hostname: php
-    image: ghcr.io/vslcatena/marktwerking/docker-marktwerking:latest
+    image: ghcr.io/vslcatena/marktwerking/marktwerking:latest
     pull_policy: if_not_present
     build:
       context: ./src
@@ -72,7 +74,9 @@ services:
     volumes:
       - ./src/html:/var/www/html
     ports:
-      - 4080:80
+      - target: 80
+        host_ip: *MW_CHOST_IP
+        published: *MW_PORT
     networks:
       - net
 
