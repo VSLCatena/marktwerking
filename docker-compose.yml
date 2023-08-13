@@ -6,6 +6,7 @@ x-variables:
   - &DB_PASSWORD "dbpass"
   - &MW_ADMIN_PASSWORD "MW23"
   - &MW_DEBUG "True"
+  - &MW_IP_WHITELIST "192.168.4.0/24,192.168.40.0/24"
   
 services:
 
