@@ -15,8 +15,8 @@ services:
     container_name: marktwerking.pma
     hostname: pma
     image: ghcr.io/linuxserver/phpmyadmin
-#    profiles:
-#      - debug
+    profiles:
+      - debug
     environment:
       PMA_HOST: *DB_HOST
       PMA_USER: root
