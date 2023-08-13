@@ -43,12 +43,12 @@ function isAllowed($ip){
     return false;
 }
 
-if(! isAllowed($_SERVER['REMOTE_ADDR'])) {
+if(! isAllowed($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     if(MW_DEBUG !=True){
         header('Location: about:blank');
     } else {
         echo "<pre>";
-        echo "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "<br>" . "MW_IP_WHITELIST:";
+        echo "HTTP_X_FORWARDED_FOR: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "<br>" . "MW_IP_WHITELIST:";
         print_r(MW_IP_WHITELIST);
         echo "</pre>";
     }
