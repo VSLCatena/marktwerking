@@ -34,6 +34,6 @@ define('DB_DATABASE', getenv_docker('MW_DB_DATABASE', 'marktwerking'));
 
 define('BAR_PASSWORD', getenv_docker('MW_BAR_PASSWORD', 'MW2021'));
 define('TITLE', getenv_docker('MW_TITLE', 'Marktwerking'));
-define('MW_DEBUG', getenv_docker('MW_DEBUG', False));
+define('MW_DEBUG',(boolean) getenv_docker('MW_DEBUG', False));
 $whitelist = getenv_docker('MW_IP_WHITELIST', '127.0.0.1');
 define('MW_IP_WHITELIST', array_unique(array_merge(explode(',', $whitelist), array('127.0.0.1'))));
