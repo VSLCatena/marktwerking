@@ -15,8 +15,8 @@ services:
     container_name: marktwerking.pma
     hostname: pma
     image: ghcr.io/linuxserver/phpmyadmin
-#    profiles:
-#      - debug
+    profiles:
+      - debug
     environment:
       PMA_HOST: *DB_HOST
       PMA_USER: root
@@ -55,8 +55,7 @@ services:
       context: ./src
       dockerfile: Dockerfile
       args:
-        - DEPLOY_ENV="development"
-#       - DEPLOY_ENV="production"
+        - DEPLOY_ENV="production" #development
     container_name: marktwerking.php
     environment:
       MW_DB_HOST: *DB_HOST
@@ -68,8 +67,8 @@ services:
       MW_DEBUG: *MW_DEBUG
       TITLE: Marktwerking 2023
     tty: true
-    volumes:
-      - ./src/html:/var/www/html
+  # volumes:
+  #   - ./src/html:/var/www/html
     ports:
       - target: 80
         host_ip: ${MW_CHOST_IP:-0.0.0.0}
