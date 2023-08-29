@@ -54,11 +54,11 @@ services:
       MW_DB_DATABASE: ${DB_DATABASE:-marktwerking}
       MW_BAR_PASSWORD: ${MW_ADMIN_PASSWORD:-MW23}
       MW_IP_WHITELIST: ${MW_IP_WHITELIST:-"192.168.4.0/24,192.168.40.0/24"}
-      MW_DEBUG: ${MW_DEBUG:-False}
+      MW_DEBUG: ${MW_DEBUG:-0}
       TITLE: Marktwerking 2023
     tty: true
-  # volumes:
-  #   - ./src/html:/var/www/html
+#    volumes:
+#      - ./src/html:/var/www/html
     ports:
       - target: 80
         host_ip: ${MW_CHOST_IP:-0.0.0.0}
