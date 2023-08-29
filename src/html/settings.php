@@ -1,24 +1,17 @@
 <?php
+define('DEBUG',False);
 
 if (!function_exists('getenv_docker')) {
-	global $debug;
-	$debug = 0;
 	function getenv_docker($env, $default)
 	{
-		if ($fileEnv = getenv($env . '_FILE')) {
-			if ($GLOBALS['debug']) {
-				echo "<br>file:";
-				print_r(rtrim(file_get_contents($fileEnv), "\r\n"));
-			}
-			return rtrim(file_get_contents($fileEnv), "\r\n");
-		} else if (($val = getenv($env)) !== false) {
-			if ($GLOBALS['debug']) {
+		if (($val = getenv($env)) !== false) {
+			if (DEBUG) {
 				echo "<br>getenv:";
 				print_r($val);
 			}
 			return $val;
 		} else {
-			if ($GLOBALS['debug']) {
+			if (DEBUG) {
 				echo "<br>default:";
 				print_r($default);
 			}
@@ -32,8 +25,8 @@ define('DB_USERNAME', getenv_docker('MW_DB_USERNAME', 'dbuser'));
 define('DB_PASSWORD', getenv_docker('MW_DB_PASSWORD', 'dbpassword'));
 define('DB_DATABASE', getenv_docker('MW_DB_DATABASE', 'marktwerking'));
 
-define('BAR_PASSWORD', getenv_docker('MW_BAR_PASSWORD', 'MW2021'));
+define('BAR_PASSWORD', getenv_docker('MW_BAR_PASSWORD', 'MW2023'));
 define('TITLE', getenv_docker('MW_TITLE', 'Marktwerking'));
-define('MW_DEBUG',(boolean) getenv_docker('MW_DEBUG', False));
-$whitelist = getenv_docker('MW_IP_WHITELIST', '127.0.0.1');
+define('MW_DEBUG',(bool) getenv_docker('MW_DEBUG', False));
+$whitelist = str_replace('"', '', getenv_docker('MW_IP_WHITELIST', '127.0.0.1'));
 define('MW_IP_WHITELIST', array_unique(array_merge(explode(',', $whitelist), array('127.0.0.1'))));

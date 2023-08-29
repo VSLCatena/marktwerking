@@ -29,8 +29,11 @@ foreach ($files as $key=>$value) {
 
 
     if (isset($_POST["submit"])) {
-
-        $check = getimagesize($files[$key]["tmp_name"]);
+        list($width, $height) = getimagesize('path to image');
+        $size = getimagesize($files[$key]["tmp_name"]);
+        $type = image_type_to_mime_type($files[$key]["tmp_name"]);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        finfo_file($finfo,$files[$key]["tmp_name"]);
         if ($check !== false) {
             /*echo "File is an image - " . $check["mime"] . ".";*/
             $uploadOk = 1;
@@ -60,25 +63,25 @@ foreach ($files as $key=>$value) {
         unlink("$target_file");
         if (move_uploaded_file($files[$key]["tmp_name"], $target_file)) {
             /*echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";*/
-
-            $im = new imagick($target_file);
-            $imageprops = $im->getImageGeometry();
-            $width = $imageprops['width'];
-            $height = $imageprops['height'];
-            if($width > $height){
-                $newHeight = 200;
-                $newWidth = (200 / $height) * $width;
-            }else{
-                $newWidth = 200;
-                $newHeight = (200 / $width) * $height;
+            if(get_loaded_extensions('imagick')){
+                $im = new imagick($target_file);
+                $imageprops = $im->getImageGeometry();
+                $width = $imageprops['width'];
+                $height = $imageprops['height'];
+                if($width > $height){
+                    $newHeight = 200;
+                    $newWidth = (200 / $height) * $width;
+                } else {
+                    $newWidth = 200;
+                    $newHeight = (200 / $width) * $height;
+                }
+                $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
+                $im->cropImage (200,200,0,0);
+                $im->writeImage( $target_file );
+                /* echo '<img src=' . $target_file . '>';*/
+            } else {
+                // no imagick installed
             }
-            $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
-            $im->cropImage (200,200,0,0);
-            $im->writeImage( $target_file );
-            /* echo '<img src=' . $target_file . '>';*/
-
-
-
         } else {
             $message= "<br>Sorry, there was an error uploading your file.";
         }
