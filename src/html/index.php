@@ -4,6 +4,7 @@ require_once('core.php');
 if (MW_DEBUG == True) {
 	error_reporting(E_ALL);
 	ini_set('display_errors',1);
+    $OutputString = "";
 }
 
 
@@ -21,7 +22,7 @@ function ipCIDRCheck ($IP, $CIDR) {
 function isAllowed($ip){
     // If the ip is matched, return true
     if(in_array($ip, MW_IP_WHITELIST)) {
-		if(MW_DEBUG == True){echo "\nIP is in whitelist\n";}
+		if(MW_DEBUG == True){$OutputString = "\nIP is in whitelist\n";}
         return true;
     }
 
@@ -29,26 +30,31 @@ function isAllowed($ip){
         $wildcardPos = strpos($i, "*");
         // Check if the ip has a wildcard
         if($wildcardPos !== false && substr($ip, 0, $wildcardPos) . "*" == $i) {
-            if(MW_DEBUG == True){echo "\nIP $ip in wildcard\n";}
+            if(MW_DEBUG == True){$OutputString = "\nIP $ip in wildcard\n";}
 			return true;
         }
         if(str_contains($i,"/")){
             if(ipCIDRCheck ($ip, $i)){
-			    if(MW_DEBUG == True){echo "\nIP $ip in CIDR $i\n";}
+			    if(MW_DEBUG == True){$OutputString = "\nIP $ip in CIDR $i\n";}
                 return true;
             }
         }
     }
-	if(MW_DEBUG == True){echo "\nIP $ip not in whitelist\n";}
+	if(MW_DEBUG == True){$OutputString = "\nIP $ip not in whitelist\n";}
     return false;
 }
 
-if(! isAllowed($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+$RemoteIP = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
+
+if(! isAllowed($RemoteIP)) {
     if(MW_DEBUG !=True){
         header('Location: about:blank');
     } else {
         echo "<pre>";
-        echo "HTTP_X_FORWARDED_FOR: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "<br>" . "MW_IP_WHITELIST:";
+        echo $OutputString;
+        echo "MW_DEBUG: " . (MW_DEBUG === True) . "\n";
+        if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) { echo "HTTP_X_FORWARDED_FOR: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "<br>"; }
+        echo "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "<br>" . "MW_IP_WHITELIST:";
         print_r(MW_IP_WHITELIST);
         echo "</pre>";
     }
