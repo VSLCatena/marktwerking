@@ -45,12 +45,13 @@ function isAllowed($ip){
 }
 
 $RemoteIP = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
+
 if(! isAllowed($RemoteIP)) {
     if(MW_DEBUG !=True){
         header('Location: about:blank');
         die;
     } else {
-        echo 'Help, I\'m not allowed! ( Not IP whitelisted)';
+      echo 'Help, I\'m not allowed! ( Not IP whitelisted)';
     }
 }
 if(MW_DEBUG ==True){
