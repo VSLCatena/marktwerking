@@ -45,23 +45,23 @@ function isAllowed($ip){
 }
 
 $RemoteIP = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
-
 if(! isAllowed($RemoteIP)) {
     if(MW_DEBUG !=True){
         header('Location: about:blank');
+        die;
     } else {
-        echo "<pre>";
-        echo $OutputString;
-        echo "MW_DEBUG: " . (MW_DEBUG === True) . "\n";
-        if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) { echo "HTTP_X_FORWARDED_FOR: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "<br>"; }
-        echo "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "<br>" . "MW_IP_WHITELIST:";
-        print_r(MW_IP_WHITELIST);
-        echo "</pre>";
+        echo 'Help, I\'m not allowed! ( Not IP whitelisted)';
     }
-} else{
-    //
 }
-
+if(MW_DEBUG ==True){
+    echo "<pre>";
+    echo $OutputString;
+    echo "MW_DEBUG: " . (MW_DEBUG === True) . "\n";
+    if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) { echo "HTTP_X_FORWARDED_FOR: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "<br>"; }
+    echo "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "<br>" . "MW_IP_WHITELIST:";
+    print_r(MW_IP_WHITELIST);
+    echo "</pre>";
+}
 
 ?>
 <!DOCTYPE html>
