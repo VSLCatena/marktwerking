@@ -52,10 +52,7 @@ services:
             TITLE: 'Marktwerking 2023'
         tty: true
         ports:
-            -
-                target: 80
-                host_ip: '${MW_CHOST_IP:-0.0.0.0}'
-                published: '${MW_PORT:-4080}'
+            - "${MW_CHOST_IP:-0.0.0.0}:${MW_PORT:-4080}:80"
         networks:
             - net
 networks:
