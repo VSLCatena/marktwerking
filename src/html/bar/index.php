@@ -1,92 +1,97 @@
-<?php 
-include("./password_protect.php");
-$message=null;
-if (MW_DEBUG == True) {
-	error_reporting(E_ALL);
-	ini_set('display_errors',1);
+<?php
+include './password_protect.php';
+$message = null;
+
+if (MW_DEBUG == true) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
 }
 
-//create a new clean array
+// create a new clean array
 $files = [];
-foreach ($_FILES as $key=>$value) {
-    if ($value['size']!=0 && $value['error']==0){
-        $n=count($files);
-        $files[$n]=$value;
-        $files[$n]['name']=$key . ".png";
-        $n+=1;
+
+foreach ($_FILES as $key => $value) {
+    if ($value['size'] != 0 && $value['error'] == 0) {
+        $n                 = count($files);
+        $files[$n]         = $value;
+        $files[$n]['name'] = $key . '.png';
+        ++$n;
     }
 }
 
+$target_dir = '../images/drinks/';
 
-$target_dir = "../images/drinks/";
-foreach ($files as $key=>$value) {
-
-
-    $target_file = $target_dir . basename($files[$key]["name"]);
-    $uploadOk = 1;
+foreach ($files as $key => $value) {
+    $target_file   = $target_dir . basename($files[$key]['name']);
+    $uploadOk      = 1;
     $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
     // Check if image file is a actual image or fake image
 
+    if (isset($_POST['submit'])) {
+        [$width, $height] = getimagesize('path to image');
+        $size             = getimagesize($files[$key]['tmp_name']);
+        $type             = image_type_to_mime_type($files[$key]['tmp_name']);
+        $finfo            = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        finfo_file($finfo, $files[$key]['tmp_name']);
 
-    if (isset($_POST["submit"])) {
-        list($width, $height) = getimagesize('path to image');
-        $size = getimagesize($files[$key]["tmp_name"]);
-        $type = image_type_to_mime_type($files[$key]["tmp_name"]);
-        $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-        finfo_file($finfo,$files[$key]["tmp_name"]);
         if ($check !== false) {
-            /*echo "File is an image - " . $check["mime"] . ".";*/
+            // echo "File is an image - " . $check["mime"] . ".";
             $uploadOk = 1;
-        } else {
-            $message= "File is not an image.";
+        }
+        else {
+            $message  = 'File is not an image.';
             $uploadOk = 0;
         }
     }
 
-
     // Check file size
     $max_size = 300000;
-    if ($files[$key]["size"] > $max_size) {
-        $message= "Sorry, your file is too large. <br>" . $max_size / 1000 . "kb is allowed";
+
+    if ($files[$key]['size'] > $max_size) {
+        $message  = 'Sorry, your file is too large. <br>' . $max_size / 1000 . 'kb is allowed';
         $uploadOk = 0;
     }
     // Allow certain file formats
-    if ($imageFileType != "png") {
-        $message= "Sorry, PNG files are allowed.";
+    if ($imageFileType != 'png') {
+        $message  = 'Sorry, PNG files are allowed.';
         $uploadOk = 0;
     }
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
-        $message="<br>Sorry, your file was not uploaded.";
+        $message = '<br>Sorry, your file was not uploaded.';
         // if everything is ok, try to upload file
-    } else {
+    }
+    else {
         unlink("$target_file");
-        if (move_uploaded_file($files[$key]["tmp_name"], $target_file)) {
-            /*echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";*/
-            if(get_loaded_extensions('imagick')){
-                $im = new imagick($target_file);
+
+        if (move_uploaded_file($files[$key]['tmp_name'], $target_file)) {
+            // echo "The file " . basename($files[$key]["name"]) . " has been uploaded.";
+            if (get_loaded_extensions('imagick')) {
+                $im         = new Imagick($target_file);
                 $imageprops = $im->getImageGeometry();
-                $width = $imageprops['width'];
-                $height = $imageprops['height'];
-                if($width > $height){
+                $width      = $imageprops['width'];
+                $height     = $imageprops['height'];
+
+                if ($width > $height) {
                     $newHeight = 200;
-                    $newWidth = (200 / $height) * $width;
-                } else {
-                    $newWidth = 200;
+                    $newWidth  = (200 / $height) * $width;
+                }
+                else {
+                    $newWidth  = 200;
                     $newHeight = (200 / $width) * $height;
                 }
-                $im->resizeImage($newWidth,$newHeight, imagick::FILTER_LANCZOS, 0.9, true);
-                $im->cropImage (200,200,0,0);
-                $im->writeImage( $target_file );
-                /* echo '<img src=' . $target_file . '>';*/
-            } else {
-                // no imagick installed
+                $im->resizeImage($newWidth, $newHeight, Imagick::FILTER_LANCZOS, 0.9, true);
+                $im->cropImage(200, 200, 0, 0);
+                $im->writeImage($target_file);
+                // echo '<img src=' . $target_file . '>';
             }
-        } else {
-            $message= "<br>Sorry, there was an error uploading your file.";
+            // no imagick installed
+        }
+        else {
+            $message = '<br>Sorry, there was an error uploading your file.';
         }
     }
-    /*echo "<br><br><a href='./index.php'>Terug naar invoer</a>";*/
+    // echo "<br><br><a href='./index.php'>Terug naar invoer</a>";
 }
 ?>
 <!DOCTYPE html>
@@ -356,15 +361,15 @@ foreach ($files as $key=>$value) {
                 </div>
             </div>
         </div>
-        <?php if($message != null): ?>
+        <?php if ($message != null) { ?>
         <div class="footer">
             <div class="footer-message-image">
                 <hr>
-                <?=$message; ?>
+                <?php echo $message; ?>
                 <hr>
             </div>
         </div>
-        <?php endif; ?>
+        <?php } ?>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
