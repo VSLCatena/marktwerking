@@ -26,20 +26,26 @@ Modules used:
 # Installation 
 
 ## Dependencies
-- docker host
+- docker compose V2
 
 
 ## Steps
 
 1. ```git clone https://github.com/vslcatena/marktwerking``` 
 
-2. Fill in your variables in docker-compose.yml and check with ```docker compose config```
+2. Fill in your variables in .env
+
+```echo -e "MW_IP_WHITELIST=192.168.7.0/24,192.168.70.0/24,192.168.40.0/24\nMW_DEBUG=1" > .env```
+
+3. Edit docker-compose.yml
    - Dev: set build arg to development and use ./src/html as volume
    - Prod: use image from GitHub and comment volumes
 
-3. ```docker-compose up  [--build] ```
+4.  check with ```docker compose config```
 
-4. Wait some minutes , grab some coffee
+5.  ```docker-compose up  [--build] ```
 
-5. Visit website on http://{docker-host}:4080
+6. Wait some minutes , grab some coffee
+
+7. Visit website on http://{docker-host}:4080
 
