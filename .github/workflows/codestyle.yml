@@ -12,15 +12,15 @@ jobs:
 
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v4
+                uses: actions/checkout@v2
                 
             -   name: Code style check
-                uses: TheDragonCode/codestyler@v3
+                uses: TheDragonCode/codestyler@v4
                 if: ${{ github.event_name == 'pull_request' }}
                 
 
             -   name: Code style fix
-                uses: TheDragonCode/codestyler@v3
+                uses: TheDragonCode/codestyler@v4
                 if: ${{ github.ref == 'refs/heads/development' }}
                 with:
                     # This token uses GitHub Actions to execute code.
