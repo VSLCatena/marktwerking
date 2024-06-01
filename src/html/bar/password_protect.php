@@ -159,6 +159,7 @@ else {
 
         if ($_COOKIE['verify'] == md5($lp)) {
             $found = true;
+
             // prolong timeout
             if (TIMEOUT_CHECK_ACTIVITY) {
                 setcookie('verify', md5($lp), $timeout, '/');

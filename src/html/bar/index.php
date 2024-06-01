@@ -51,15 +51,17 @@ foreach ($files as $key => $value) {
         $message  = 'Sorry, your file is too large. <br>' . $max_size / 1000 . 'kb is allowed';
         $uploadOk = 0;
     }
+
     // Allow certain file formats
     if ($imageFileType != 'png') {
         $message  = 'Sorry, PNG files are allowed.';
         $uploadOk = 0;
     }
+
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
         $message = '<br>Sorry, your file was not uploaded.';
-        // if everything is ok, try to upload file
+    // if everything is ok, try to upload file
     }
     else {
         unlink("$target_file");
@@ -85,7 +87,7 @@ foreach ($files as $key => $value) {
                 $im->writeImage($target_file);
                 // echo '<img src=' . $target_file . '>';
             }
-            // no imagick installed
+        // no imagick installed
         }
         else {
             $message = '<br>Sorry, there was an error uploading your file.';

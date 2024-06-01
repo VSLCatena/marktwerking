@@ -132,7 +132,8 @@ foreach ($prices as $timeframe => $priceList) {
         $drinksFinal[$key]['amount'][] = $orderHistory[$timeframe][$key]; // add amount bought to list
     }
 }
-foreach($drinksFinal as $id => &$drinksFinalItem){
+
+foreach ($drinksFinal as $id => &$drinksFinalItem) {
     array_shift($drinksFinalItem['amount']); // remove first value (null)
 }
 

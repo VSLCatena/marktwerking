@@ -32,6 +32,7 @@ function isAllowed($ip)
 
     foreach (MW_IP_WHITELIST as $i) {
         $wildcardPos = strpos($i, '*');
+
         // Check if the ip has a wildcard
         if ($wildcardPos !== false && $i == substr($ip, 0, $wildcardPos) . '*') {
             if (MW_DEBUG == true) {
