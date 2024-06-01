@@ -7,4 +7,3 @@ updates:
             interval: daily
         labels:
             - dependabot
-
