@@ -65,6 +65,7 @@ $RemoteIP = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
 if (! isAllowed($RemoteIP)) {
     if (MW_DEBUG != true) {
         header('Location: about:blank');
+
         exit;
     }
     echo 'Help, I\'m not allowed! ( Not IP whitelisted)';
