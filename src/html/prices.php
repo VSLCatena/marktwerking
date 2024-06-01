@@ -1,6 +1,5 @@
 <?php
-
-require_once 'core.php';
+require_once('core.php');
 header('Content-Type: application/json');
 $timeframe = 10 * 60;
 
