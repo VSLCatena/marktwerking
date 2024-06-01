@@ -1,74 +1,94 @@
 <?php
-require_once('core.php');
+require_once 'core.php';
 
-if (MW_DEBUG == True) {
-	error_reporting(E_ALL);
-	ini_set('display_errors',1);
-    $OutputString = "";
+if (MW_DEBUG == true) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    $OutputString = '';
 }
 
+function ipCIDRCheck($IP, $CIDR)
+{
+    [$net, $mask] = explode('/', $CIDR);
 
-function ipCIDRCheck ($IP, $CIDR) {
-    list ($net, $mask) = explode ('/', $CIDR);
-    
-    $ip_net = ip2long ($net);
+    $ip_net  = ip2long($net);
     $ip_mask = ~((1 << (32 - $mask)) - 1);
 
-    $ip_ip = ip2long ($IP);
+    $ip_ip = ip2long($IP);
 
-    return (($ip_ip & $ip_mask) == ($ip_net & $ip_mask));
+    return ($ip_ip & $ip_mask) == ($ip_net & $ip_mask);
 }
 
-function isAllowed($ip){
+function isAllowed($ip)
+{
     // If the ip is matched, return true
-    if(in_array($ip, MW_IP_WHITELIST)) {
-		if(MW_DEBUG == True){$OutputString = "\nIP is in whitelist\n";}
+    if (in_array($ip, MW_IP_WHITELIST)) {
+        if (MW_DEBUG == true) {
+            $OutputString = "\nIP is in whitelist\n";
+        }
+
         return true;
     }
 
-    foreach(MW_IP_WHITELIST as $i){
-        $wildcardPos = strpos($i, "*");
+    foreach (MW_IP_WHITELIST as $i) {
+        $wildcardPos = strpos($i, '*');
+
         // Check if the ip has a wildcard
-        if($wildcardPos !== false && substr($ip, 0, $wildcardPos) . "*" == $i) {
-            if(MW_DEBUG == True){$OutputString = "\nIP $ip in wildcard\n";}
-			return true;
+        if ($wildcardPos !== false && $i == substr($ip, 0, $wildcardPos) . '*') {
+            if (MW_DEBUG == true) {
+                $OutputString = "\nIP $ip in wildcard\n";
+            }
+
+            return true;
         }
-        if(str_contains($i,"/")){
-            if(ipCIDRCheck ($ip, $i)){
-			    if(MW_DEBUG == True){$OutputString = "\nIP $ip in CIDR $i\n";}
+
+        if (str_contains($i, '/')) {
+            if (ipCIDRCheck($ip, $i)) {
+                if (MW_DEBUG == true) {
+                    $OutputString = "\nIP $ip in CIDR $i\n";
+                }
+
                 return true;
             }
         }
     }
-	if(MW_DEBUG == True){$OutputString = "\nIP $ip not in whitelist\n";}
+
+    if (MW_DEBUG == true) {
+        $OutputString = "\nIP $ip not in whitelist\n";
+    }
+
     return false;
 }
 
-$RemoteIP = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] ;
+$RemoteIP = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
 
-if(! isAllowed($RemoteIP)) {
-    if(MW_DEBUG !=True){
+if (! isAllowed($RemoteIP)) {
+    if (MW_DEBUG != true) {
         header('Location: about:blank');
-        die;
-    } else {
-      echo 'Help, I\'m not allowed! ( Not IP whitelisted)';
+
+        exit;
     }
+    echo 'Help, I\'m not allowed! ( Not IP whitelisted)';
 }
-if(MW_DEBUG ==True){
-    echo "<pre>";
+
+if (MW_DEBUG == true) {
+    echo '<pre>';
     echo $OutputString;
-    echo "MW_DEBUG: " . (MW_DEBUG === True) . "\n";
-    if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) { echo "HTTP_X_FORWARDED_FOR: " . $_SERVER['HTTP_X_FORWARDED_FOR'] . "<br>"; }
-    echo "REMOTE_ADDR: " . $_SERVER['REMOTE_ADDR'] . "<br>" . "MW_IP_WHITELIST:";
+    echo 'MW_DEBUG: ' . (MW_DEBUG === true) . "\n";
+
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        echo 'HTTP_X_FORWARDED_FOR: ' . $_SERVER['HTTP_X_FORWARDED_FOR'] . '<br>';
+    }
+    echo 'REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR'] . '<br>MW_IP_WHITELIST:';
     print_r(MW_IP_WHITELIST);
-    echo "</pre>";
+    echo '</pre>';
 }
 
 ?>
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <title><?=TITLE;?></title>
+    <title><?php echo TITLE; ?></title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/output.css" rel="stylesheet" type="text/css">

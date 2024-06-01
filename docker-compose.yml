@@ -1,81 +1,70 @@
 services:
-
-  #phpmyadmin
-  marktwerking.pma:
-    container_name: marktwerking.pma
-    hostname: pma
-    image: ghcr.io/linuxserver/phpmyadmin
-    profiles:
-      - debug
-    environment:
-      PMA_HOST: ${DB_HOST:-db}
-      PMA_USER: root
-      PMA_PASSWORD: ${DB_ROOT_PASSWORD:-db}
-      TZ: Europe/Amsterdam
-    ports: 
-      - 4081:80
-    restart: unless-stopped
-    networks:
-      - net
-
-  #MySQL Service
-  marktwerking.db:
-    hostname: db
-    container_name: marktwerking.db
-    image: 'yobasystems/alpine-mariadb:latest'
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-db}
-      MYSQL_DATABASE: ${DB_DATABASE:-marktwerking}
-      MYSQL_USER: ${DB_USERNAME:-dbuser}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-dbpass}
-    volumes:
-      - dbdata:/var/lib/mysql/ # allows you to stop and restart the db service without losing data
-    volumes_from:
-      - marktwerking.php:ro
-    networks:
-      - net
-    restart: always
-
-  #PHP Service
-  marktwerking.php:
-    hostname: php
-    image: ghcr.io/vslcatena/marktwerking:latest
-    pull_policy: if_not_present
-    build:
-      context: ./src
-      dockerfile: Dockerfile
-      args:
-        - DEPLOY_ENV="production" #development
-    container_name: marktwerking.php
-    environment:
-      MW_DB_HOST: ${DB_HOST:-db}
-      MW_DB_USERNAME: ${DB_USERNAME:-dbuser}
-      MW_DB_PASSWORD: ${DB_PASSWORD:-dbpass}
-      MW_DB_DATABASE: ${DB_DATABASE:-marktwerking}
-      MW_BAR_PASSWORD: ${MW_ADMIN_PASSWORD:-MW23}
-      MW_IP_WHITELIST: ${MW_IP_WHITELIST:-"192.168.4.0/24,192.168.40.0/24"}
-      MW_DEBUG: ${MW_DEBUG:-0}
-      TITLE: Marktwerking 2023
-    tty: true
-#    volumes:
-#      - ./src/html:/var/www/html
-    ports:
-      - target: 80
-        host_ip: ${MW_CHOST_IP:-0.0.0.0}
-        published: ${MW_PORT:-4080}
-    networks:
-      - net
-
-#Docker Networks
+    marktwerking.pma:
+        container_name: marktwerking.pma
+        hostname: pma
+        image: ghcr.io/linuxserver/phpmyadmin
+        profiles:
+            - debug
+        environment:
+            PMA_HOST: '${DB_HOST:-db}'
+            PMA_USER: root
+            PMA_PASSWORD: '${DB_ROOT_PASSWORD:-db}'
+            TZ: Europe/Amsterdam
+        ports:
+            - '4081:80'
+        restart: unless-stopped
+        networks:
+            - net
+    marktwerking.db:
+        hostname: db
+        container_name: marktwerking.db
+        image: 'yobasystems/alpine-mariadb:latest'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-db}'
+            MYSQL_DATABASE: '${DB_DATABASE:-marktwerking}'
+            MYSQL_USER: '${DB_USERNAME:-dbuser}'
+            MYSQL_PASSWORD: '${DB_PASSWORD:-dbpass}'
+        volumes:
+            - 'dbdata:/var/lib/mysql/'
+        volumes_from:
+            - 'marktwerking.php:ro'
+        networks:
+            - net
+        restart: always
+    marktwerking.php:
+        hostname: php
+        image: 'ghcr.io/vslcatena/marktwerking:latest'
+        pull_policy: if_not_present
+        build:
+            context: ./src
+            dockerfile: Dockerfile
+            args:
+                - 'DEPLOY_ENV="production"'
+        container_name: marktwerking.php
+        environment:
+            MW_DB_HOST: '${DB_HOST:-db}'
+            MW_DB_USERNAME: '${DB_USERNAME:-dbuser}'
+            MW_DB_PASSWORD: '${DB_PASSWORD:-dbpass}'
+            MW_DB_DATABASE: '${DB_DATABASE:-marktwerking}'
+            MW_BAR_PASSWORD: '${MW_ADMIN_PASSWORD:-MW23}'
+            MW_IP_WHITELIST: '${MW_IP_WHITELIST:-"192.168.4.0/24,192.168.40.0/24"}'
+            MW_DEBUG: '${MW_DEBUG:-0}'
+            TITLE: 'Marktwerking 2023'
+        tty: true
+        ports:
+            - '${MW_CHOST_IP:-0.0.0.0}:${MW_PORT:-4080}:80'
+        networks:
+            - net
 networks:
-  net:
-    driver: bridge
-    ipam:
-     driver: default
-     config:
-       - subnet: ${MW_NET:-192.168.32.0/29}
-    driver_opts:
-     com.docker.network.bridge.name: marktw_net
+    net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - { subnet: '${MW_NET:-192.168.32.0/29}' }
+        driver_opts:
+            com.docker.network.bridge.name: marktw_net
 volumes:
-  dbdata:
-    driver: local
+    dbdata:
+        driver: local
+
