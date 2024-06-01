@@ -24,6 +24,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $drink) {
     $drinksFinal[$drink['id']]['id']     = $drink['id'];
     $drinksFinal[$drink['id']]['name']   = $drink['name'];
     $drinksFinal[$drink['id']]['prices'] = [];
+    $drinksFinal[$drink['id']]['amount'] = [];
     $prices[0][$drink['id']]             = $drink['start_price'];
 }
 
@@ -128,7 +129,11 @@ foreach ($orderHistory as $timeframe => $history) {
 foreach ($prices as $timeframe => $priceList) {
     foreach ($priceList as $key => $price) {
         $drinksFinal[$key]['prices'][] = doubleval($price);
+        $drinksFinal[$key]['amount'][] = $orderHistory[$timeframe][$key]; // add amount bought to list
     }
+}
+foreach($drinksFinal as $id => &$drinksFinalItem){
+    array_shift($drinksFinalItem['amount']); // remove first value (null)
 }
 
 echo json_encode(array_values($drinksFinal), JSON_PRETTY_PRINT);
