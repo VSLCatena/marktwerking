@@ -6,6 +6,7 @@ header('Content-Type: application/json');
 // fetch all settings
 $query    = $pdo->query('SELECT * FROM settings');
 $settings = [];
+
 foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $settings[$row['setting']] = $row['value'];
 }
