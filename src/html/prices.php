@@ -13,7 +13,6 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
 $timeframe = $settings['time_round'] * 60; // quotient of unix timestamp (10 minutes * 60 seconds in a minute)
 
-
 function roundTo5s($num)
 {
     return round($num * 20) / 20;
