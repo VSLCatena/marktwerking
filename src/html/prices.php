@@ -2,7 +2,16 @@
 
 require_once 'core.php';
 header('Content-Type: application/json');
-$timeframe = 10 * 60;
+
+// fetch all settings
+$query    = $pdo->query('SELECT * FROM settings');
+$settings = [];
+
+foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $settings[$row['setting']] = $row['value'];
+}
+
+$timeframe = $settings['time_round'] * 60; // quotient of unix timestamp (10 minutes * 60 seconds in a minute)
 
 function roundTo5s($num)
 {

@@ -4,7 +4,7 @@ services:
         hostname: pma
         image: ghcr.io/linuxserver/phpmyadmin
         profiles:
-            - debug
+            - dev
         environment:
             PMA_HOST: '${DB_HOST:-db}'
             PMA_USER: root
@@ -12,6 +12,8 @@ services:
             TZ: Europe/Amsterdam
         ports:
             - '4081:80'
+        volumes:
+            - 'pmadata:/config'
         restart: unless-stopped
         networks:
             - net
@@ -66,4 +68,6 @@ networks:
             com.docker.network.bridge.name: marktw_net
 volumes:
     dbdata:
+        driver: local
+    pmadata:
         driver: local
