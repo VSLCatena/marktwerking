@@ -120,6 +120,7 @@ foreach ($files as $key => $value) {
             <div id="navbar" class="navbar-right navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="../index.php" type="button">Beamer</a></li>
+                    <li><a href="download.php" type="button">Export data</a></li>
                     <li><a data-target="#financial" data-toggle="modal" type="button">Financial</a></li>
                     <li><a data-target="#settings" data-toggle="modal" type="button">Settings</a></li>
                     <li><a href="./index.php?logout">Uitloggen</a></li>
