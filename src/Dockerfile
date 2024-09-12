@@ -12,7 +12,7 @@ ENV DEPLOY_ENV=production
 RUN mkdir /docker-entrypoint-initdb.d && \
     cp /var/www/html/data/marktwerking.structure.sql /docker-entrypoint-initdb.d/ && \
     cp /usr/local/etc/php/php.ini-${DEPLOY_ENV} /usr/local/etc/php/php.ini && \
-    chown www-data:root /var/www/html/bar/tmp && \
+    mkdir /var/www/html/bar/tmp && chown www-data:root /var/www/html/bar/tmp && \
     sed -ri ' \
         s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
         s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
