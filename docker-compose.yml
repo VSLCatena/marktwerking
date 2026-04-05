@@ -38,9 +38,15 @@ services:
         image: 'ghcr.io/vslcatena/marktwerking:latest'
         labels:
           - "traefik.enable=true"
-          - "traefik.http.routers.${PROJECT}.tls=true"
+          - "traefik.docker.network=REVERSE_PROXY"
           - "traefik.http.routers.${PROJECT}.rule=Host(`${PROJECT_FQDN}`)"
           - "traefik.http.routers.${PROJECT}.entrypoints=${PROJECT_ENTRYPOINT}"
+          - "traefik.http.routers.${PROJECT}.tls.domains[0].main=${PROJECT_DOMAIN_MAIN}"
+          - "traefik.http.routers.${PROJECT}.tls.domains[0].sans=${PROJECT_DOMAIN_SANS}"
+          - "traefik.http.services.${PROJECT}.loadbalancer.server.port=80"
+          - "traefik.http.routers.${PROJECT}.tls.certresolver=${PROJECT_CERT_RESOLVER}"
+          - "traefik.http.middlewares.${PROJECT}-whitelist.ipallowlist.sourcerange=${PROJECT_IP_WHITELIST}"
+
         pull_policy: if_not_present
         build:
             context: ./src
@@ -58,11 +64,14 @@ services:
             MW_DEBUG: '${MW_DEBUG:-0}'
             TITLE: 'Marktwerking 2023'
         tty: true
-        ports:
-            - '${MW_CHOST_IP:-0.0.0.0}:${MW_PORT:-4080}:80'
+#        ports:
+#            - '${MW_CHOST_IP:-0.0.0.0}:${MW_PORT:-4080}:80'
         networks:
             - net
+            - REVERSE_PROXY
 networks:
+    REVERSE_PROXY:
+      external: true
     net:
         driver: bridge
         ipam:
