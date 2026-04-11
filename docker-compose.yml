@@ -32,7 +32,7 @@ services:
             - 'marktwerking.php:ro'
         networks:
             - net
-        restart: always
+        restart: unless-stopped
     marktwerking.php:
         hostname: php
         image: 'ghcr.io/vslcatena/marktwerking:latest'
