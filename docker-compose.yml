@@ -38,14 +38,14 @@ services:
         image: 'ghcr.io/vslcatena/marktwerking:latest'
         labels:
           - "traefik.enable=true"
-          - "traefik.docker.network=REVERSE_PROXY"
-          - "traefik.http.routers.${PROJECT}.rule=Host(`${PROJECT_FQDN}`)"
+          - "traefik.docker.network=${PROJECT_TRAEFIK_NETWORK}"
+          - "traefik.http.routers.${PROJECT}.tls=true"
+          - "traefik.http.routers.${PROJECT}.rule=Host(`${PROJECT_FQDN}`) || Host(`${PROJECT_FQDN2}`)"
           - "traefik.http.routers.${PROJECT}.entrypoints=${PROJECT_ENTRYPOINT}"
           - "traefik.http.routers.${PROJECT}.tls.domains[0].main=${PROJECT_DOMAIN_MAIN}"
           - "traefik.http.routers.${PROJECT}.tls.domains[0].sans=${PROJECT_DOMAIN_SANS}"
           - "traefik.http.routers.${PROJECT}.tls.certresolver=${PROJECT_CERT_RESOLVER}"
-          - "traefik.http.routers.${PROJECT}.middlewares=${PROJECT}-whitelist@docker"
-          - "traefik.http.middlewares.${PROJECT}-whitelist.ipallowlist.sourcerange=${PROJECT_IP_WHITELIST}"
+          - "traefik.http.routers.${PROJECT}.middlewares=${PROJECT_MIDDLEWARES}"
           - "traefik.http.services.${PROJECT}.loadbalancer.server.port=80"
         pull_policy: if_not_present
         build:
