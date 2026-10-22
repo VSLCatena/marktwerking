@@ -35,7 +35,7 @@ services:
         restart: unless-stopped
     marktwerking.php:
         hostname: php
-        image: 'ghcr.io/vslcatena/marktwerking:latest'
+        image: 'ghcr.io/vslcatena/marktwerking:${PROJECT_PHP_MARKTWERKING_VERSION:-latest}'
         labels:
           - "traefik.enable=true"
           - "traefik.docker.network=${PROJECT_TRAEFIK_NETWORK}"
